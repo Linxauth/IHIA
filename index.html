@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="IHIA">
+  <meta name="application-name" content="IHIA">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="O método que expande a inteligência">
+  <title>IHIA</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #0a0a0a; min-height: 100%; }
+    body { -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+    #root { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    (function() {
+      var w = console.warn;
+      console.warn = function(m) {
+        if (typeof m === 'string' && m.indexOf('Babel') !== -1) return;
+        w.apply(console, arguments);
+      };
+    })();
+  </script>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useRef, useCallback, useEffect } = React;
+
+
+// ══════════════════════════════════════════════════════════════
+// TRIGGER MAP
+// ══════════════════════════════════════════════════════════════
+const TRIGGER_MAP = [
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. ETAPA 1 — Reconhecimento da emoção
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — reconhecimento", method: "S.A.S.E.",
+    patterns: [
+      "estou sentindo", "estou me sentindo", "me sinto", "sinto que", "sinto ",
+      "estou triste", "estou com raiva", "estou frustrado", "estou frustrada",
+      "estou ansioso", "estou ansiosa", "estou angustiado", "estou angustiada",
+      "estou com medo", "estou sobrecarregado", "estou sobrecarregada",
+      "estou cansado", "estou cansada", "estou esgotado", "estou esgotada",
+      "estou sozinho", "estou sozinha", "estou vazio", "estou vazia",
+      "estou mal", "me sinto mal", "triste", "angústia", "solidão", "saudade",
+      "magoado", "magoada", "decepcionado", "decepcionada", "humilhado", "humilhada",
+      "emoção", "sentimento", "afeto", "raiva", "ansiedade", "esgotamento",
+      "emocionado", "emocionada", "fora de controle",
+      "chorar", "choro", "estou chorando", "vontade de chorar",
+      "irritado", "irritada", "incomodado", "incomodada",
+      "impotente", "desesperado", "desesperada", "sem saída",
+      "vergonha", "culpa", "arrependimento", "remorso",
+      "estresse", "stress", "estressada", "estressado",
+      "depressão", "depressiva", "depressivo",
+      "pânico", "nervoso", "nervosa",
+      "agressividade", "agressivo", "agressiva",
+      "explosiva", "explosivo", "impulsos", "impulsivo", "impulsiva",
+      "manipulação", "manipulado", "manipulada",
+      "insatisfação", "insatisfeito", "insatisfeita",
+      "aflição", "aflito", "aflita", "desassossego",
+      "tormento", "atormenta", "atormentando", "atormentado",
+      "horrível", "horror", "ruim",
+      "rejeição", "rejeitaram", "ser aceito", "fazer parte",
+      "ciúmes", "ciumenta", "ciumento",
+      "inveja", "invejoso", "invejosa",
+      "orgulhoso", "orgulhosa", "orgulho",
+      "ridícula", "ridículo",
+      "abuso", "abusada", "abusado",
+      "desrespeito", "desrespeitado", "desrespeitada",
+      "invadido", "invadida", "invade",
+      "invalidar", "invalidação", "inválido", "inválida",
+      "perdão", "perdoar", "perdoado", "perdoada",
+      "estou mal", "me sinto mal", "sinto mal", "me faz mal",
+      "está mal", "está mau", "mau humor", "de mau",
+      "ferida antiga", "mágoa antiga", "magoou", "lembrança que dói",
+      "aquilo que aconteceu", "meu valor", "não me respeitam",
+      "não valoriza", "fugir de sentir", "não quero sentir",
+      "perdi", "falta de", "adeus", "dizer adeus",
+      "me segura", "preso", "amarrado", "não consigo soltar",
+      "animar", "esperança", "lado bom", "apesar de tudo",
+      "estou suportando", "passando dos limites",
+      "desamparar", "desamparo", "desamparado", "desamparada",
+      "sem chão", "inadequado", "inadequada",
+      "fracasso", "falência", "derrota",
+    ],
+    questions: [
+      "O que você está sentindo agora, com precisão?",
+      "Qual é o nome exato dessa emoção: é raiva ou é, na verdade, humilhação ou medo?",
+      "Esse sentimento é sobre o que aconteceu ou sobre o que você teme que aconteça?",
+      "Se você nomeasse essa emoção com uma só palavra, qual seria?",
+      "O que no seu corpo está dizendo que algo importa aqui?",
+      "Essa emoção está informando ou está comandando?",
+      "Qual parte disso é medo, orgulho ou desejo — e qual parte é análise real?",
+      "Esta emoção é proporcional ao evento ou é um acúmulo de coisas que você guardou?",
+      "O que essa intensidade emocional revela sobre o que é verdadeiramente importante para você?",
+      "O que a sua mente está criando e como o seu corpo está respondendo?",
+      "Qual é a necessidade imediata do seu corpo agora: descanso, movimento ou silêncio?",
+      "Você sente que esse estresse é uma resposta a um evento isolado ou ele se tornou o seu estado constante?",
+      "Você consegue identificar quais situações específicas fazem seu coração acelerar ou sua respiração ficar curta?",
+      "Como você tem cuidado do seu sono e da sua alimentação nos últimos dias?",
+      "O que você diria para um amigo querido se ele estivesse sentindo exatamente o que você sente agora?",
+      "Que valor seu está sendo ferido ou fortalecido agora?",
+      "O que você não quer sentir que precisa ser sentido?",
+      "O que a perda ou a falta está te ensinando?",
+      "Se você pudesse dizer adeus a algo que te segura, o que seria?",
+      "O que ainda te anima, mesmo quando tudo parece difícil?",
+      "O que você está esperando que aconteça para se permitir ser feliz?",
+      "Se você pudesse perdoar alguém de verdade, quem seria? E se essa pessoa fosse você?",
+      "Que ferida antiga você ainda trata como se fosse de ontem?",
+      "O que você está tolerando que deveria ter um limite?",
+      "Se você remover o que passou e o que supostamente virá, o que forma o seu agora?",
+      "Quando você se comportou da maneira da qual agora se arrepende, qual das suas necessidades buscava atender?",
+      "Quais os sentimentos e necessidades por trás de cada fala?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. ETAPA 2 — Autocontrole sob impulso
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — autocontrole", method: "S.A.S.E.",
+    patterns: [
+      "vou mandar", "vou falar", "vou responder", "vou fazer agora",
+      "não aguento mais", "chega", "não vou tolerar",
+      "preciso agir agora", "vou resolver", "vou confrontar", "vou embora",
+      "não vou aceitar", "isso é pessoal", "me senti atacado", "me sinto atacado", "me sinto atacada",
+      "me traiu", "me traíram", "não é justo", "é uma injustiça",
+      "estou com raiva de", "não suporto", "odeio isso",
+      "vou explodir", "não consigo segurar",
+      "quero brigar", "vou falar o que penso",
+      "rompeu meu limite", "passou dos limites",
+      "grosso", "grosseria", "passividade",
+      "intromissão", "intromissivo", "intrometer", "invasivo",
+      "controle", "manipular",
+      "sarcasmo", "exagero", "exagerado",
+      "explosivo", "explosiva",
+      "briga", "poder", "poderoso", "poderosa",
+      "não vou",
+    ],
+    questions: [
+      "Se isso fosse sobre outra pessoa, qual seria o seu conselho?",
+      "Você tomaria essa decisão da mesma forma se estivesse em paz?",
+      "O que você está prestes a fazer que o seu eu mais lúcido não faria?",
+      "Qual parte disso é fato e qual parte é interpretação sua?",
+      "Como você pode criar um espaço de 5 segundos entre o que sente e o que fala?",
+      "Você escolhe ter razão ou prefere ter paz neste momento específico?",
+      "O que mudaria se você esperasse 24 horas para agir?",
+      "Você está aplicando o mesmo critério que usaria para julgar outra pessoa?",
+      "Se você agir agora, será por clareza ou por alívio?",
+      "Que parte de você assumiu o controle agora: a criança ferida ou o adulto funcional?",
+      "Você percebe se costuma usar o silêncio ou o sarcasmo como uma 'arma' para demonstrar insatisfação?",
+      "Qual é o seu maior receio ao tentar ser direto e assertivo com alguém?",
+      "Você percebe se costuma omitir informações ou usar silêncio e culpa para conseguir o que deseja?",
+      "O que você está defendendo com tanta força que já nem lembra o motivo?",
+      "O que você perde ao sempre tentar estar certo?",
+      "Que mentira pequena você conta para evitar um conflito?",
+      "Que conversa você adia porque teme a reação, não o conteúdo?",
+      "Você está comunicando claramente as suas necessidades ou está esperando que alguém adivinhe?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. ETAPA 3 — Busca por alívio
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — execução", method: "S.A.S.E.",
+    patterns: [
+      "quero que acabe", "quero resolver logo", "só quero paz",
+      "preciso de alívio", "quero sair disso", "quero parar de pensar",
+      "quero esquecer", "não consigo mais", "estou no limite",
+      "não tenho mais energia", "estou exausto", "estou exausta",
+      "quero desaparecer", "quero sumir",
+      "não aguento mais pensar", "minha cabeça vai explodir",
+      "evitar", "evitação", "bloqueio",
+      "privação",
+    ],
+    questions: [
+      "O que essa emoção está protegendo?",
+      "Qual ação, mesmo pequena, estaria alinhada com o que você realmente quer?",
+      "Se você agir agora, será por clareza ou por alívio?",
+      "Você está tentando suprimir esse sentimento ou permite que ele atravesse o seu corpo?",
+      "Você percebe se o alívio que sente ao evitar uma situação difícil é passageiro?",
+      "Do que exatamente você está tentando se proteger ao adiar: de um julgamento, de um erro ou de sentir algo doloroso?",
+      "Você nota como a sua vida tem 'encolhido' por causa das coisas que você parou de fazer para não sentir desconforto?",
+      "O que você está evitando sentir ao adiar isso?",
+      "O que você está evitando fazer que daria sentido a essa semana?",
+      "O que você está esperando que aconteça para se permitir ser feliz?",
+      "O que você pode delegar ou eliminar da sua rotina hoje para diminuir sua carga mental?",
+      "Que pequena coisa de hoje você pode agradecer sem filtro?",
+      "Respire fundo. Inspire 4, segure 4, expire 4 — o quanto acalma?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — Medo e pânico
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — medo", method: "S.A.S.E.",
+    patterns: [
+      "tenho medo", "medo de", "com medo de", "receio que", "temo que",
+      "apavorado", "apavorada", "assustado", "assustada",
+      "vulnerável", "ameaçado", "ameaçada",
+      "fragilizado", "fragilizada", "exposto", "exposta",
+      "pavor", "terror",
+      "não acredito", "não confio", "confiança",
+    ],
+    questions: [
+      "O que você teme?",
+      "Por que isso amedronta?",
+      "O que você faria se não tivesse medo?",
+      "Essa emoção está informando ou está comandando?",
+      "Quando o medo aparece, ele é uma resposta a um perigo real e imediato ou a uma possibilidade futura que ainda não aconteceu?",
+      "Você já parou para observar que, embora o pânico seja extremamente desconfortável, ele sempre tem um fim?",
+      "Você está antecipando cenários catastróficos que, racionalmente, têm pouca chance de acontecer?",
+      "Como você se sente em relação à sua capacidade de lidar com o imprevisto?",
+      "O que você se culpa por algo que, na verdade, não está sob o seu controle?",
+      "Que prova você já tem de que pode confiar em si mesmo — e por que ignora?",
+      "O que você faria se acreditasse que é digno de amor incondicional?",
+      "O que você faria agora se não tivesse medo de errar de novo?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — Autocrítica e autoestima
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. + A.P.L. — autocrítica", method: "S.A.S.E.",
+    patterns: [
+      "ninguém gosta de mim", "ninguém me entende", "ninguém me vê",
+      "não sou suficiente", "não sou capaz", "não mereço",
+      "sou inferior", "sou um fracasso", "nunca vou conseguir",
+      "todo mundo é melhor", "sempre fui assim", "nunca vou mudar",
+      "sou burro", "sou burra", "sou incompetente", "não presto",
+      "me odeio", "sou horrível", "sou péssimo", "sou péssima",
+      "ninguém me respeita", "não me valorizam", "sou invisível",
+      "incompetência", "incompetente",
+      "críticas", "crítico", "criticado", "criticada", "criticar",
+      "não sou",
+    ],
+    questions: [
+      "Esse pensamento é sobre você ou sobre o que você aprendeu a acreditar?",
+      "Se isso fosse sobre outra pessoa, qual seria o seu conselho?",
+      "O que você já sabe, mas ainda não aceitou?",
+      "Que crença está por trás desse pensamento?",
+      "Você percebe se recebe uma crítica como feedback sobre uma ação isolada ou como um ataque ao seu valor como pessoa?",
+      "Quando você é criticado, sua reação é de defesa ou você consegue filtrar o que faz sentido?",
+      "Você nota se a sua autocrítica é mais rigorosa e cruel do que qualquer comentário que outra pessoa faria?",
+      "Você tem o hábito de minimizar seus próprios acertos e maximizar seus pequenos erros?",
+      "Você costuma basear o seu valor próprio nas conquistas que alcança ou na aprovação que recebe dos outros?",
+      "Você consegue listar três qualidades suas que são independentes da opinião alheia?",
+      "Que elogio você tem dificuldade de aceitar e por quê?",
+      "O que você precisa provar para si mesmo para se sentir suficiente? E isso é alcançável?",
+      "Que história você conta sobre si mesmo que já não serve mais?",
+      "O que mudaria se você não precisasse da aprovação de ninguém para se sentir suficiente?",
+      "Que verdade sobre você mesmo você não quer que ninguém descubra?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — Perfeccionismo e autopressão
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. + A.P.L. — perfeccionismo", method: "S.A.S.E.",
+    patterns: [
+      "precisa ser perfeito", "não pode ter erro", "tem que ser impecável",
+      "não posso errar", "não posso falhar", "muito exigente",
+      "perfeição", "perfeccionismo", "não tem margem para erro",
+      "só lanço quando estiver pronto", "precisa estar impecável",
+      "tenho padrão muito alto", "não consigo entregar pela metade",
+      "competência", "competente",
+      "quando estiver",
+    ],
+    questions: [
+      "Quem exige perfeição — você ou o problema?",
+      "O que é 'bom o suficiente' aqui?",
+      "Se você entregasse isso imperfeito, o pior que pode acontecer é…?",
+      "O indicador de maturidade é agir sem necessidade de certeza absoluta. O que impede isso agora?",
+      "Se você tivesse apenas metade do tempo atual, o que priorizaria sem falta?",
+      "Você sente que precisa ser 'perfeito' para ser aceito, ou você se permite ser humano e vulnerável?",
+      "Você tem se permitido momentos de descanso e ócio criativo, ou está se cobrando produtividade em um momento de exaustão?",
+      "Você sente que o bloqueio surge do medo de que o resultado final não seja 'perfeito' ou da dificuldade de simplesmente começar?",
+      "E se você conseguir, o que aconteceria de desconfortável?",
+      "De que forma você está boicotando o próprio avanço?",
+      "Que obrigação você teria se fosse bem-sucedido nisso?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — Intensidade, intromissão e invisibilidade
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — intensidade", method: "S.A.S.E.",
+    patterns: [
+      "intenso", "intensidade", "sou intenso", "sou intensa",
+      "invisível", "invisibilidade", "me sinto invisível", "ninguém me nota",
+      "intromissão", "intromissivo", "me intrometer",
+      "exagero", "exagerado", "estou exagerando", "reajo demais",
+    ],
+    questions: [
+      "Você percebe se a sua intensidade é uma forma de aproveitar a vida ao máximo ou surge de uma urgência em preencher vazios?",
+      "Você sente que a sua entrega total é bem recebida, ou acaba se frustrando quando os outros não correspondem na mesma voltagem?",
+      "Você consegue identificar em quais momentos a sua intensidade te impulsiona e em quais ela gera exaustão?",
+      "Você sente que a sua percepção de invisibilidade surge da falta de reconhecimento externo ou de uma dificuldade interna em validar o seu próprio valor?",
+      "Você percebe se está medindo a sua importância apenas por grandes feitos, ignorando o impacto positivo nas pequenas interações?",
+      "Em que momentos da sua história você aprendeu que precisava ser 'extraordinário' para não se sentir invisível?",
+      "Você percebe se costuma transformar um problema pequeno em uma catástrofe total antes mesmo de tentar resolvê-lo?",
+      "O que você ganha ao intensificar uma narrativa — é uma forma de garantir que as pessoas te ouçam?",
+      "Que parte de você morreria se você parasse de se preocupar?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA ETAPA 1 — Observação e mapeamento
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — observação", method: "MIDESA",
+    patterns: [
+      "preciso agir", "vou logo", "é urgente", "não posso esperar",
+      "tenho que resolver agora", "a situação exige", "preciso decidir já",
+      "estratégia", "estratégico", "estratégica", "melhor estratégia",
+      "qual a melhor", "qual seria a melhor", "como devo agir",
+      "plano de ação", "próximo passo", "caminho certo",
+      "decisão estratégica", "abordagem", "tática", "planejamento",
+      "como resolver", "o que fazer", "por onde começar",
+      "muita coisa ao mesmo tempo", "sobrecarga de informação",
+      "não consigo priorizar", "tudo parece urgente",
+      "não vejo saída", "como sair dessa", "preciso de uma solução",
+      "qual é o caminho", "como avançar", "quero crescer",
+      "quero melhorar", "quero mudar", "quero progredir",
+      "meta", "objetivo", "resultado esperado",
+      "resultado", "problema", "difícil",
+      "propósito",
+      "trabalho", "no trabalho", "meu trabalho", "ambiente de trabalho",
+      "ruminação", "ruminando", "pensar demais", "ficar pensando", "remoendo",
+      "aprender", "estudar", "recomeçar", "começar de novo",
+      "outra chance", "mereço mais", "não reconhecem",
+      "estou estagnado", "situação difícil", "está difícil",
+      "depois eu faço", "deixo pra depois",
+      "plano b", "alternativa", "outra opção",
+      "consequências", "consequência", "efeito colateral",
+      "priorizar", "prioridade", "urgente vs importante",
+      "importante", "urgência", "prazo", "deadline", "apertado",
+      "preciso saber mas não quero",
+    ],
+    questions: [
+      "Você mapeou o campo antes de agir ou está reagindo ao que apareceu?",
+      "O que você ainda não sabe sobre essa situação e precisaria saber?",
+      "Quais são os padrões que se repetem aqui — e o que eles indicam?",
+      "Você está vendo o que realmente importa ou o que aparece com mais força?",
+      "Qual é a única coisa que importa agora?",
+      "O que você pode descartar sem perder o essencial?",
+      "Quais recursos — tempo, energia, contatos — você já possui e não está utilizando?",
+      "Como você pode redesenhar o seu ambiente para que ele trabalhe a favor do seu objetivo?",
+      "Qual é a 'pedra no sapato' que, se removida, tornaria todo o resto mais fácil?",
+      "Se você não pudesse falhar, qual seria a sua estratégia imediata?",
+      "Quem são as três pessoas que poderiam oferecer a você uma perspectiva técnica sobre isso?",
+      "Quais pequenas tarefas você se sente capaz de realizar hoje para recuperar uma mínima sensação de controle?",
+      "O que realmente importa para você, não o que os outros esperam?",
+      "O valor que você gera está superando a posição que você ocupa?",
+      "Se você pudesse recomeçar algo importante hoje, sem medo do julgamento, o que faria?",
+      "O que você está adiando aprender porque seria doloroso?",
+      "O que você faria com o tempo que gasta ruminando?",
+      "O que você precisa parar de fazer para ter energia para o essencial?",
+      "Que momento de hoje merece sua atenção plena e não está recebendo?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA ETAPA 2 — Separação do eu do objeto
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — separação do eu", method: "MIDESA",
+    patterns: [
+      "isso é sobre mim", "foi contra mim", "fizeram isso comigo",
+      "me prejudicaram", "minha reputação", "minha imagem",
+      "é um ataque", "estão me sabotando", "não me respeitam",
+      "me ignoraram", "fui excluído", "fui excluída",
+      "foi de propósito", "querem me prejudicar",
+      "não reconhecem meu trabalho", "estão me desvalorizando",
+      "me usaram", "fui usado", "fui usada",
+      "passividade",
+    ],
+    questions: [
+      "Se essa decisão fosse sobre outra pessoa, você analisaria da mesma forma?",
+      "O que você está trazendo de pessoal para uma análise que deveria ser objetiva?",
+      "Quais impulsos estão interferindo no seu julgamento agora?",
+      "Você está decidindo ou está reagindo?",
+      "Se você separasse o que aconteceu do que interpretou, o que sobra?",
+      "O que você ganha ao manter o problema e o que perde ao resolvê-lo definitivamente?",
+      "Você percebe se a sua vontade de estar presente nasce de conexão genuína ou de ansiedade em controlar os resultados?",
+      "Você consegue identificar os sinais sutis de que a outra pessoa precisa de espaço?",
+      "O que o silêncio do outro está dizendo, e o que você está projetando?",
+      "Quando você se sente ignorado, você tende a avançar sobre o limite do outro para reafirmar sua importância?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA ETAPA 3 — Formulação de hipóteses
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — hipóteses", method: "MIDESA",
+    patterns: [
+      "com certeza", "obviamente", "claramente", "não há dúvida",
+      "a única forma", "só pode ser", "é óbvio que", "todo mundo sabe",
+      "é evidente", "não tem outra explicação", "só existe um caminho",
+      "tenho certeza que", "está provado que",
+      "é assim e ponto", "não tem como ser diferente",
+      "todo mundo concorda", "é unanimidade", "sem dúvida nenhuma",
+      "melhor que", "melhor do que", "pior",
+      "comparar", "comparação",
+    ],
+    questions: [
+      "Você desenvolveu mais de um cenário ou está seguindo a primeira hipótese?",
+      "Que outra explicação é possível para o que está acontecendo?",
+      "Qual é o cenário que você está evitando considerar?",
+      "Se a sua hipótese principal estiver errada, o que muda?",
+      "Há outra forma de interpretar?",
+      "E se o contrário fosse verdade?",
+      "Qual é a pergunta que você ainda não se fez e que mudaria absolutamente tudo?",
+      "Você consegue imaginar uma interpretação diferente e mais realista para essa situação?",
+      "Qual é a evidência real que você tem de que esse pensamento negativo é 100% verdadeiro?",
+      "Com quem você está se comparando agora e por quê?",
+      "O que a conquista do outro está despertando em você?",
+      "Se você não pudesse se comparar a ninguém, como saberia que é bom?",
+      "O que você inveja em alguém que poderia desenvolver em si?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA ETAPA 4 — Teste racional
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — teste racional", method: "MIDESA",
+    patterns: [
+      "não tem como dar errado", "tenho certeza que vai dar certo",
+      "não preciso pensar mais", "confio no meu instinto",
+      "meu feeling diz que", "já fiz isso antes", "não preciso testar",
+      "tenho experiência", "sei como funciona",
+      "não preciso validar", "vou direto pra ação",
+      "é intuitivo", "meu faro nunca falhou",
+    ],
+    questions: [
+      "O que acontece se isso der errado? Você simulou esse cenário?",
+      "Que evidência seria suficiente para você mudar de ideia?",
+      "Você está validando antes de executar ou executando para validar?",
+      "O que os dados estão dizendo que a narrativa está escondendo?",
+      "Se isso der errado, dá para desfazer?",
+      "Qual é o seu plano B caso a abordagem atual não funcione nos próximos 30 dias?",
+      "Se você pudesse falhar publicamente sem vergonha, o que tentaria?",
+      "O que você já sabe que é suficiente para decidir, mas ainda não aceita?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA ETAPA 5 — Decisão e execução consciente
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — decisão consciente", method: "MIDESA",
+    patterns: [
+      "não sei o que fazer", "estou travado", "estou travada",
+      "travada", "travado",
+      "não consigo decidir", "fico em dúvida", "toda hora mudo de ideia",
+      "não sei por onde começar", "estou paralisado", "estou paralisada",
+      "como decidir", "como escolher", "qual caminho",
+      "vou deixar para depois", "mais tarde", "quando tiver tempo",
+      "ainda não é hora", "preciso esperar",
+      "não estou pronto", "não estou pronta",
+      "e se eu errar a escolha", "não consigo me comprometer",
+      "depois eu",
+      "não sei",
+      "não entendo",
+      "não gosto",
+    ],
+    questions: [
+      "Essa ação vem de critério objetivo ou de pressão emocional?",
+      "O que você está esperando para decidir — mais dados ou mais coragem?",
+      "Qual é o menor passo que você pode dar agora e avaliar o resultado?",
+      "Se você só pudesse fazer uma coisa, qual seria?",
+      "Que decisão você está adiando?",
+      "O que você está esperando que aconteça sozinho?",
+      "Qual conversa difícil você está adiando que destravaria o seu próximo nível?",
+      "Se você olhasse para trás daqui a um ano, de qual decisão de hoje mais se orgulharia?",
+      "Se você tivesse que escolher em cinco minutos, qual critério usaria?",
+      "O que você faria se todos os caminhos tivessem o mesmo risco?",
+      "O que você espera que mude sem você agir?",
+      "O que você está esperando que os outros resolvam por você?",
+      "Que hábito seu esconde um medo que você não nomeia?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA ETAPA 6 — Avaliação e ajuste
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — ajuste", method: "MIDESA",
+    patterns: [
+      "já decidi e não vou mudar", "não vou recuar", "é assim que tem que ser",
+      "investi demais para parar", "não posso admitir que errei",
+      "não vou dar o braço a torcer", "não mudo de ideia",
+      "segui o plano e não funcionou", "tentei e não deu certo",
+      "os resultados não vieram", "não está funcionando",
+      "preciso revisar minha estratégia", "não estou evoluindo",
+      "estagnado", "estagnada", "estou rodando em círculos",
+      "os mesmos erros se repetem",
+    ],
+    questions: [
+      "O que os resultados estão dizendo que você ainda não está disposto a ouvir?",
+      "Você está ajustando a rota ou defendendo o plano original a qualquer custo?",
+      "O que esse ciclo está ensinando que você ainda não incorporou?",
+      "Que falha de julgamento se repetiu aqui — e como você atualiza o modelo?",
+      "Se você revisitasse essa situação daqui a um ano, o que veria diferente?",
+      "Como você pode transformar esse obstáculo em uma vantagem de aprendizado?",
+      "O que você precisa parar de fazer para ter energia para o que realmente importa?",
+      "Você está sendo produtivo ou apenas ocupado com tarefas de baixa relevância?",
+      "Você percebe se gasta mais tempo analisando o que 'deveria ter feito' do que planejando o presente?",
+      "Você sente que esse ciclo de pensamentos repetitivos te ajuda a encontrar uma solução real?",
+      "Que parte dessa falha foi informação nova, não fracasso?",
+      "O que você faria com o tempo que gasta ruminando?",
+      "O que você já sabe que é suficiente para decidir, mas ainda não aceita?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // MIDESA — Autonomia e validação externa
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — autonomia", method: "MIDESA",
+    patterns: [
+      "me diga o que fazer", "qual a resposta certa", "o que eu devo fazer",
+      "me ajuda a decidir", "o que é certo", "confirma para mim",
+      "preciso de uma opinião", "elogio", "reconhecimento", "aprovação",
+      "me deixar feliz", "o que alguém poderia", "por que a opinião alheia",
+      "preciso de validação", "quero saber se estou certo",
+      "li que", "ouvi que", "disseram que", "todo mundo diz",
+      "os especialistas dizem", "de acordo com", "a ciência diz",
+      "estudos mostram", "pesquisas indicam", "é o que se recomenda",
+      "todos fazem assim", "o mercado diz", "a tendência é",
+      "o que os outros fazem", "o que eu deveria",
+    ],
+    questions: [
+      "O espelho não decide. O que você já sabe e ainda não assumiu?",
+      "Você está buscando uma resposta ou uma confirmação?",
+      "O que mudaria se não houvesse ninguém para te dizer o que fazer?",
+      "O problema está na vontade de se ver satisfeito ou de satisfazer?",
+      "Por que a opinião alheia importa tanto?",
+      "Qual é a sua opinião real sobre isso — não a que você aprendeu a ter?",
+      "Você está pensando com a sua própria cabeça ou com a cabeça de quem admira?",
+      "Se você fosse o maior especialista em si mesmo, o que sua análise diria?",
+      "Que parte dessa conclusão é genuinamente sua e que parte é emprestada?",
+      "Você percebe se a sua satisfação com uma conquista depende do elogio de outra pessoa?",
+      "Em que medida você molda seus comportamentos apenas para obter validação de um grupo?",
+      "Você consegue identificar qual sensação surge quando não recebe o reconhecimento que esperava?",
+      "Qual critério objetivo você usará para medir se está progredindo ou estagnado?",
+      "O que você faria se ninguém soubesse o que você fez?",
+      "Se você pudesse recomeçar agora, o que manteria do jeito que está?",
+      "Quem define os seus critérios, você ou a opinião dos outros?",
+      "Que tipo de elogio alguém poderia expressar para fazê-lo pular de alegria?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. CAMADA 1 — Metacognição
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — metacognição", method: "A.P.L.",
+    patterns: [
+      "sempre foi assim", "nunca foi diferente", "é natural que",
+      "é normal", "é assim que funciona", "sempre soube que",
+      "nunca questionei", "aceitei que", "me ensinaram que",
+      "talvez", "acho que", "não sei se", "será que",
+      "me parece", "parece que", "provavelmente", "possivelmente",
+      "estou sendo muito exigente", "estou exagerando",
+      "será que estou", "estou errado", "estou errada",
+      "sempre pensei que", "aprendi a acreditar",
+      "automaticamente faço", "instintivamente",
+      "reajo sempre assim", "meu padrão de comportamento",
+      "insegura", "inseguro",
+      "não consigo",
+      "não dependo",
+      "não dependo de ninguém", "dependo de",
+      "viés", "preconceito", "suposição",
+      "evidência", "evidências", "prova", "dado concreto",
+      "aprender com erro", "feedback", "crítica construtiva",
+    ],
+    questions: [
+      "O que você está assumindo sem ter verificado?",
+      "Que crença está por trás desse pensamento?",
+      "Você está pensando sobre o problema ou a partir do problema?",
+      "O que você recusaria ouvir sobre isso — e por quê?",
+      "Que padrão recorrente de erro aparece aqui?",
+      "O que estou ignorando porque me incomoda?",
+      "O que você não está dizendo porque teme que não seja verdade?",
+      "Qual é a pergunta que você ainda não se fez e que mudaria absolutamente tudo?",
+      "Você consegue identificar em quais áreas da sua vida a insegurança costuma falar mais alto?",
+      "Quando você se sente inseguro, qual é a 'voz' ou crítica interna que surge na sua mente?",
+      "Qual é o medo real que está por trás da sua insegurança: rejeição, falhar ou não ser 'bom o suficiente'?",
+      "Você costuma comparar-se com os outros focando apenas no que acha que te falta?",
+      "De que forma a sua insegurança impede você de tomar decisões ou iniciar novos projetos?",
+      "Se você tivesse a certeza absoluta de que não seria julgado, o que faria de diferente hoje?",
+      "Que pergunta você nunca fez a si mesmo com medo da resposta?",
+      "Que hábito seu esconde um medo que você não nomeia?",
+      "O que você está defendendo com tanta força que já nem lembra o motivo?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. CAMADA 2 — Análise e decomposição
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — análise", method: "A.P.L.",
+    patterns: [
+      "o problema é", "o problema está", "a causa disso é",
+      "isso acontece porque", "é culpa", "a culpa é",
+      "foi por causa de", "resultou em", "foi consequência",
+      "análise", "analisar", "avaliar", "examinar",
+      "vou enviar", "vou mandar essa mensagem", "vou postar",
+      "pode ser mal interpretado", "como dizer isso",
+      "os dados mostram", "a evidência", "está comprovado",
+      "verdade", "honestamente", "o que não falo",
+      "quero entender", "preciso compreender", "não faz sentido",
+      "como isso funciona", "por que isso acontece",
+    ],
+    questions: [
+      "O que é fato aqui? O que é narrativa?",
+      "Se você separasse o que aconteceu do que interpretou, o que sobra?",
+      "Qual é a premissa que, se estiver errada, muda tudo?",
+      "Você está separando correlação de causalidade?",
+      "O que está subentendido?",
+      "O que isso realmente significa?",
+      "Que parte da verdade eu estou negando?",
+      "Você está focado em aliviar o sintoma ou em tratar a causa raiz do problema?",
+      "Você consegue identificar qual é o gatilho emocional que faz sua mente travar em um pensamento específico?",
+      "Você percebe se gasta mais tempo analisando o passado do que planejando o presente?",
+      "O que você está adiando aprender porque seria doloroso?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. CAMADA 3 — Crítica e antidogmatismo
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — crítica", method: "A.P.L.",
+    patterns: [
+      "tenho certeza", "estou convicto", "estou convicta",
+      "não tenho dúvida", "é definitivo", "não há como questionar",
+      "está claro para mim", "já analisei tudo", "está resolvido",
+      "portanto", "logo", "em conclusão", "fica claro que",
+      "isso confirma que", "a conclusão é", "está provado",
+      "não preciso rever", "é incontestável",
+      "ceticismo", "cético", "cética",
+    ],
+    questions: [
+      "Em que cenário esse pensamento estaria completamente errado?",
+      "Você está defendendo uma ideia ou investigando uma?",
+      "O que precisaria acontecer para essa conclusão falhar?",
+      "Que contraexemplo você está ignorando?",
+      "Toda conclusão é provisória. O que tornaria a sua revisável?",
+      "De que isso depende?",
+      "O que o contradiz?",
+      "Em que condição deixa de ser verdadeiro?",
+      "Você sente que o seu ceticismo funciona como proteção para evitar decepções ou é uma busca genuína por evidências?",
+      "Você percebe se a sua necessidade de provas constantes impede você de confiar nas intenções das pessoas?",
+      "Até que ponto o seu ceticismo ajuda nas decisões e em que momento se torna uma barreira que gera isolamento?",
+      "O que você está defendendo com tanta força que já nem lembra o motivo?",
+      "Se você não pudesse usar a palavra 'mas' por um dia, o que mudaria?",
+      "O que você perde ao sempre tentar estar certo?",
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. CAMADA 4 — Integração e aprendizado
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — integração", method: "A.P.L.",
+    patterns: [
+      "errei mas", "falhei mas", "não foi minha culpa",
+      "se tivesse", "se eu soubesse antes", "ninguém me avisou",
+      "não tinha como saber", "foi azar", "foi o contexto",
+      "não fui compreendido", "não fui compreendida",
+      "aprendi com isso", "o que aprendi", "lição",
+      "o que posso melhorar", "o que preciso ajustar",
+      "repetindo os mesmos erros", "padrão que se repete",
+      "não evoluo", "estou estagnado no mesmo nível",
+      "bloqueio criativo", "não consigo criar", "não consigo escrever",
+      "não tenho ideias", "trava criativa",
+    ],
+    questions: [
+      "O que esse momento está ensinando que você ainda não quer aprender?",
+      "Se você revisitasse essa situação daqui a um ano, o que veria diferente?",
+      "O que você já sabe, mas ainda não aceitou?",
+      "Que modelo mental precisaria ser atualizado aqui?",
+      "Erros são dados, não falhas morais. O que esse dado está dizendo?",
+      "Como você pode transformar esse obstáculo em uma vantagem de aprendizado?",
+      "O que você precisa parar de fazer para ter energia para o que realmente importa?",
+      "Você consegue identificar se existe alguma autocrítica que interrompe suas ideias antes mesmo de colocá-las em prática?",
+      "Você tem se permitido momentos de ócio criativo, ou está se cobrando produtividade em um momento de exaustão?",
+      "Que parte dessa falha foi informação nova, não fracasso?",
+      "O que você faria se pudesse recomeçar sem o peso do que já foi?",
+      "O que você ainda pode recuperar que considera perdido?",
+      "Se você pudesse recomeçar agora, o que manteria do jeito que está?",
+      "Quais lições essa experiência está ocultando?",
+    ],
+  },
+
+];
+// ══════════════════════════════════════════════════════════════
+// FRAMEWORK INFO — cor lavanda para S.A.S.E. (Lin X)
+// ══════════════════════════════════════════════════════════════
+const FRAMEWORK_INFO = {
+  "S.A.S.E.": {
+    name: "S.A.S.E. — Sabedoria Aplicada Sob Emoção",
+    principle: "Reconheça a emoção que interfere. Separe fato de desejo antes de agir.",
+    color: "#9b8ec2",
+  },
+  "MIDESA": {
+    name: "MIDESA — Modelo Integrado de Decisão Estratégica Avançada",
+    principle: "Observe o campo. Separe o eu da análise. Valide antes de executar.",
+    color: "#6a7a9a",
+  },
+  "A.P.L.": {
+    name: "A.P.L. — Arquitetura do Pensar Lúcido",
+    principle: "Disciplinar o pensar, não automatizá-lo. Lucidez é aceitar revisão permanente.",
+    color: "#8a7a6a",
+  },
+};
+
+function getFrameworkInfo(method) {
+  return FRAMEWORK_INFO[method] || FRAMEWORK_INFO["A.P.L."];
+}
+
+// ══════════════════════════════════════════════════════════════
+// DETECTOR
+// ══════════════════════════════════════════════════════════════
+// Verifica se o padrão existe como palavra (ou fragmento de frase) no texto
+// Padrões com espaço ou com mais de 6 chars: includes simples
+// Padrões curtos (palavra isolada): exige boundary (espaço, pontuação ou início/fim)
+function matchPattern(lo, p) {
+  if (!lo.includes(p)) return false;
+  // Padrão contém espaço ou é longo — includes já é suficiente
+  if (p.includes(" ") || p.length > 7) return true;
+  // Palavra curta — verifica se está delimitada
+  const re = new RegExp("(^|[\\s,\\.!?;:\\(\\)])" + p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "([\\s,\\.!?;:\\(\\)]|$)", "i");
+  return re.test(lo);
+}
+
+function detect(text) {
+  if (!text || text.trim().length < 3) return null;
+  const lo = text.toLowerCase();
+  const matched = [];
+  for (const trigger of TRIGGER_MAP) {
+    for (const p of trigger.patterns) {
+      if (matchPattern(lo, p)) { matched.push(trigger); break; }
+    }
+  }
+  if (matched.length === 0) return null;
+  const priority = ["S.A.S.E.", "MIDESA", "A.P.L."];
+  matched.sort((a, b) => {
+    const ai = priority.findIndex(p => a.method.includes(p));
+    const bi = priority.findIndex(p => b.method.includes(p));
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+  return matched[0];
+}
+
+// ══════════════════════════════════════════════════════════════
+// RESPIRAÇÃO GUIADA 4-4-4 — Lin X
+// ══════════════════════════════════════════════════════════════
+function RespiraGuiada() {
+  const [ativo, setAtivo] = useState(false);
+  const [fase, setFase] = useState("inspirar");
+  const [segundos, setSegundos] = useState(4);
+  const [progresso, setProgresso] = useState(0);
+
+  useEffect(() => {
+    if (!ativo) return;
+    const interval = setInterval(() => {
+      setSegundos(prev => {
+        if (prev === 1) {
+          setFase(f => f === "inspirar" ? "segurar" : f === "segurar" ? "expirar" : "inspirar");
+          return 4;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [ativo]);
+
+  // Progresso calculado separadamente para evitar dependência circular
+  useEffect(() => {
+    const step = (4 - segundos) / 4;
+    if (fase === "inspirar")  setProgresso(step);
+    else if (fase === "expirar") setProgresso(1 - step);
+    else setProgresso(1);
+  }, [segundos, fase]);
+
+  const tamanho = 60 + progresso * 80;
+  const cor = "#9b8ec2";
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "24px" }}>
+      {!ativo ? (
+        <button onClick={() => setAtivo(true)} style={{
+          background: "none", border: `1px solid ${cor}66`, borderRadius: "30px",
+          color: cor, fontFamily: "'Courier Prime', monospace",
+          fontSize: "11px", padding: "6px 16px", cursor: "pointer", letterSpacing: "0.1em",
+        }}>
+          ◌ respiração 4-4-4
+        </button>
+      ) : (
+        <div>
+          <div style={{
+            width: `${tamanho}px`, height: `${tamanho}px`, borderRadius: "50%",
+            background: cor, opacity: 0.6 + progresso * 0.3,
+            margin: "0 auto 12px auto", transition: "all 0.8s ease-out",
+            boxShadow: `0 0 12px ${cor}44`,
+          }} />
+          <div style={{
+            fontFamily: "'Courier Prime', monospace", fontSize: "12px",
+            color: cor, letterSpacing: "0.1em", textTransform: "uppercase",
+          }}>
+            {fase} {segundos}s
+          </div>
+          <button onClick={() => { setAtivo(false); setFase("inspirar"); setSegundos(4); setProgresso(0); }}
+            style={{ background: "none", border: "none", color: "#333", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", marginTop: "8px", letterSpacing: "0.1em" }}>
+            parar
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// TRATAK — chama CSS realista, 30s countdown, apaga sozinha (A.P.L.)
+// ══════════════════════════════════════════════════════════════
+const TRATAK_DURACAO = 30;
+
+function Tratak() {
+  const [fase, setFase] = useState("idle"); // idle | acesa | apagando | fim
+  const [segundos, setSegundos] = useState(TRATAK_DURACAO);
+
+  useEffect(() => {
+    if (fase !== "acesa") return;
+    if (segundos <= 0) { setFase("apagando"); return; }
+    const t = setTimeout(() => setSegundos(s => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [fase, segundos]);
+
+  useEffect(() => {
+    if (fase !== "apagando") return;
+    const t = setTimeout(() => setFase("fim"), 1800);
+    return () => clearTimeout(t);
+  }, [fase]);
+
+  function reiniciar() { setFase("idle"); setSegundos(TRATAK_DURACAO); }
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "24px" }}>
+      <style>{`
+        .chama-wrap { position: relative; width: 80px; height: 150px; margin: 0 auto; }
+        .chama-base {
+          position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+          width: 64px; height: 30px;
+          background: radial-gradient(ellipse at 50% 100%, #ff6a00bb 0%, #ff450055 55%, transparent 100%);
+          border-radius: 50%; filter: blur(5px);
+          animation: chamaBase 2s ease-in-out infinite alternate;
+        }
+        .chama-corpo {
+          position: absolute; bottom: 0; left: 50%; transform-origin: bottom center;
+          width: 52px; height: 120px; margin-left: -26px;
+          background: radial-gradient(ellipse 55% 75% at 50% 88%,
+            #fff8e0 0%, #ffe066 20%, #ff9500 45%, #ff4500 70%, transparent 100%);
+          border-radius: 50% 50% 28% 28% / 60% 60% 40% 40%;
+          filter: blur(2.5px);
+          animation: chamaCorpo 1.9s ease-in-out infinite alternate;
+        }
+        .chama-nucleo {
+          position: absolute; bottom: 16px; left: 50%; transform-origin: bottom center;
+          width: 20px; height: 58px; margin-left: -10px;
+          background: radial-gradient(ellipse 55% 68% at 50% 82%,
+            #ffffff 0%, #fff8d0 38%, transparent 100%);
+          border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+          filter: blur(1px);
+          animation: chamaNucleo 1.3s ease-in-out infinite alternate;
+        }
+        @keyframes chamaBase {
+          0% { opacity: 0.7; transform: translateX(-50%) scaleX(1); }
+          100% { opacity: 1; transform: translateX(-50%) scaleX(1.18); }
+        }
+        @keyframes chamaCorpo {
+          0%   { transform: scaleX(1)    scaleY(1)    rotate(-1.5deg); }
+          30%  { transform: scaleX(0.93) scaleY(1.05) rotate(2deg); }
+          65%  { transform: scaleX(1.07) scaleY(0.96) rotate(-2.5deg); }
+          100% { transform: scaleX(0.96) scaleY(1.07) rotate(1deg); }
+        }
+        @keyframes chamaNucleo {
+          0%   { transform: scaleX(1)    scaleY(1)    rotate(1.5deg); opacity: 0.88; }
+          50%  { transform: scaleX(0.86) scaleY(1.1)  rotate(-1.5deg); opacity: 1; }
+          100% { transform: scaleX(1.12) scaleY(0.93) rotate(1deg); opacity: 0.82; }
+        }
+        .chama-apagando .chama-corpo,
+        .chama-apagando .chama-nucleo,
+        .chama-apagando .chama-base {
+          animation: apagarChama 1.8s ease-out forwards !important;
+        }
+        @keyframes apagarChama {
+          0%   { opacity: 1;   transform: scaleY(1) scaleX(1); }
+          40%  { opacity: 0.6; transform: scaleY(0.5) scaleX(0.7); }
+          80%  { opacity: 0.2; transform: scaleY(0.15) scaleX(0.4); }
+          100% { opacity: 0;   transform: scaleY(0) scaleX(0.2); }
+        }
+        .fumaca {
+          position: absolute; bottom: 8px; left: 50%;
+          width: 3px; height: 50px; margin-left: -1.5px;
+          background: linear-gradient(to top, #666, transparent);
+          border-radius: 2px;
+          animation: fumacaSubir 2s ease-out forwards;
+        }
+        @keyframes fumacaSubir {
+          0%   { opacity: 0.5; transform: scaleX(1) translateY(0); }
+          100% { opacity: 0;   transform: scaleX(3) translateY(-30px) translateX(8px); }
+        }
+      `}</style>
+
+      {fase === "idle" && (
+        <button onClick={() => setFase("acesa")} style={{
+          background: "none", border: "1px solid #cc7a0055", borderRadius: "30px",
+          color: "#996000", fontFamily: "'Courier Prime', monospace",
+          fontSize: "11px", padding: "6px 18px", cursor: "pointer", letterSpacing: "0.1em",
+        }}>
+          acender a chama
+        </button>
+      )}
+
+      {(fase === "acesa" || fase === "apagando") && (
+        <div>
+          <div className={`chama-wrap${fase === "apagando" ? " chama-apagando" : ""}`}>
+            <div className="chama-base" />
+            <div className="chama-corpo" />
+            <div className="chama-nucleo" />
+            {fase === "apagando" && <div className="fumaca" />}
+          </div>
+          {fase === "acesa" && (
+            <div style={{ marginTop: "14px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#664422", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "8px" }}>
+                fixe o olhar na chama
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "26px", color: segundos <= 10 ? "#cc5500" : "#553322", letterSpacing: "0.04em" }}>
+                {segundos}
+              </div>
+              <button onClick={reiniciar} style={{ background: "none", border: "none", color: "#555", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", marginTop: "6px", letterSpacing: "0.08em" }}>
+                cancelar
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {fase === "fim" && (
+        <div>
+          <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#554030", letterSpacing: "0.08em", lineHeight: "1.9", marginBottom: "14px" }}>
+            ◆ 30 segundos concluídos.<br />
+            Retorne à análise com foco renovado.
+          </div>
+          <button onClick={reiniciar} style={{ background: "none", border: "1px solid #2a2a2a", borderRadius: "20px", color: "#444", fontFamily: "'Courier Prime', monospace", fontSize: "10px", padding: "5px 14px", cursor: "pointer", letterSpacing: "0.1em" }}>
+            acender novamente
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// ANCORA MIDESA — técnica 5-4-3-2-1, círculos sequenciais (MIDESA)
+// ══════════════════════════════════════════════════════════════
+const ANCORA_SENTIDOS = [
+  { num: 5, sentido: "VISÃO",    instrucao: "Observe ao seu redor e nomeie cinco coisas que você pode ver.",  tempo: 25000 },
+  { num: 4, sentido: "TATO",     instrucao: "Sinta e toque em quatro coisas ao seu redor.",                   tempo: 20000 },
+  { num: 3, sentido: "AUDIÇÃO",  instrucao: "Concentre-se em três sons que pode ouvir.",                      tempo: 15000 },
+  { num: 2, sentido: "OLFATO",   instrucao: "Identifique dois cheiros que consegue sentir.",                   tempo: 10000 },
+  { num: 1, sentido: "PALADAR",  instrucao: "Perceba um gosto na boca.",                                       tempo:  5000 },
+];
+const ANCORA_COR = "#6a7a9a";
+
+function AncoraMIDESA() {
+  const [ativo, setAtivo] = useState(false);
+  const [passo, setPasso] = useState(0);
+  const [concluido, setConcluido] = useState(false);
+  const [progresso, setProgresso] = useState(0);
+
+  const tempoAtual = ANCORA_SENTIDOS[passo].tempo;
+
+  useEffect(() => {
+    if (!ativo || concluido) return;
+    setProgresso(0);
+    const inicio = Date.now();
+    const animId = setInterval(() => {
+      const elapsed = Date.now() - inicio;
+      setProgresso(Math.min(elapsed / tempoAtual, 1));
+    }, 50);
+    const t = setTimeout(() => {
+      clearInterval(animId);
+      setProgresso(1);
+      if (passo < ANCORA_SENTIDOS.length - 1) {
+        setPasso(p => p + 1);
+      } else {
+        setConcluido(true);
+      }
+    }, tempoAtual);
+    return () => { clearTimeout(t); clearInterval(animId); };
+  }, [ativo, passo, concluido, tempoAtual]);
+
+  function reiniciar() { setAtivo(false); setPasso(0); setConcluido(false); setProgresso(0); }
+
+  const atual = ANCORA_SENTIDOS[passo];
+  const raio = 42;
+  const circunf = 2 * Math.PI * raio;
+  const dashOffset = circunf * (1 - progresso);
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "24px" }}>
+      {!ativo ? (
+        <button onClick={() => setAtivo(true)} style={{
+          background: "none", border: `1px solid ${ANCORA_COR}55`, borderRadius: "30px",
+          color: ANCORA_COR, fontFamily: "'Courier Prime', monospace",
+          fontSize: "11px", padding: "6px 18px", cursor: "pointer", letterSpacing: "0.1em",
+        }}>
+          ancoragem — 5 sentidos
+        </button>
+      ) : concluido ? (
+        <div>
+          <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: ANCORA_COR, letterSpacing: "0.08em", lineHeight: "1.9", marginBottom: "14px" }}>
+            ◆ Âncora concluída.<br />
+            Retorne à decisão com presença plena.
+          </div>
+          <button onClick={reiniciar} style={{ background: "none", border: `1px solid ${ANCORA_COR}44`, borderRadius: "20px", color: ANCORA_COR, fontFamily: "'Courier Prime', monospace", fontSize: "10px", padding: "5px 14px", cursor: "pointer", letterSpacing: "0.1em" }}>
+            repetir
+          </button>
+        </div>
+      ) : (
+        <div>
+          {/* Círculo de progresso com número e sentido */}
+          <div style={{ position: "relative", width: "100px", height: "100px", margin: "0 auto 16px" }}>
+            <svg width="100" height="100" style={{ position: "absolute", top: 0, left: 0 }}>
+              {/* Trilha */}
+              <circle cx="50" cy="50" r={raio} fill="none" stroke="#1a1a1a" strokeWidth="3" />
+              {/* Progresso */}
+              <circle cx="50" cy="50" r={raio} fill="none"
+                stroke={ANCORA_COR} strokeWidth="3"
+                strokeDasharray={circunf}
+                strokeDashoffset={dashOffset}
+                strokeLinecap="round"
+                transform="rotate(-90 50 50)"
+                style={{ transition: "stroke-dashoffset 0.05s linear" }}
+              />
+            </svg>
+            {/* Número central */}
+            <div style={{
+              position: "absolute", top: "50%", left: "50%",
+              transform: "translate(-50%, -50%)",
+              display: "flex", flexDirection: "column", alignItems: "center",
+              lineHeight: 1,
+            }}>
+              <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "30px", color: ANCORA_COR }}>
+                {atual.num}
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: ANCORA_COR + "88", letterSpacing: "0.04em", marginTop: "2px" }}>
+                {Math.ceil((1 - progresso) * tempoAtual / 1000)}s
+              </div>
+            </div>
+          </div>
+
+          {/* Nome do sentido */}
+          <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: ANCORA_COR, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px" }}>
+            {atual.sentido}
+          </div>
+
+          {/* Instrução */}
+          <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "12px", color: "#444", lineHeight: "1.7", maxWidth: "260px", margin: "0 auto 14px", letterSpacing: "0.02em" }}>
+            {atual.instrucao}
+          </div>
+
+          {/* Indicador de passo */}
+          <div style={{ display: "flex", gap: "6px", justifyContent: "center", marginBottom: "12px" }}>
+            {ANCORA_SENTIDOS.map((_, i) => (
+              <div key={i} style={{
+                width: "6px", height: "6px", borderRadius: "50%",
+                background: i < passo ? ANCORA_COR : i === passo ? ANCORA_COR : "#1a1a1a",
+                opacity: i <= passo ? 1 : 0.3,
+                transition: "all 0.3s",
+              }} />
+            ))}
+          </div>
+
+          <button onClick={reiniciar} style={{ background: "none", border: "none", color: "#555", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", letterSpacing: "0.08em" }}>
+            parar
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// PERSISTÊNCIA
+// ══════════════════════════════════════════════════════════════
+const STORAGE_KEYS = { DIARY: "ihia_diary", OFFSETS: "ihia_question_offsets" };
+
+function loadDiary() {
+  try { const s = localStorage.getItem(STORAGE_KEYS.DIARY); return s ? JSON.parse(s) : []; }
+  catch { return []; }
+}
+function saveDiary(diary) {
+  try { localStorage.setItem(STORAGE_KEYS.DIARY, JSON.stringify(diary)); } catch {}
+}
+
+// CORREÇÃO 1: loadOffsets e saveOffsets definidos (estavam ausentes)
+function loadOffsets() {
+  try { const s = localStorage.getItem(STORAGE_KEYS.OFFSETS); return s ? JSON.parse(s) : {}; }
+  catch { return {}; }
+}
+function saveOffsets(offsets) {
+  try { localStorage.setItem(STORAGE_KEYS.OFFSETS, JSON.stringify(offsets)); } catch {}
+}
+
+// ══════════════════════════════════════════════════════════════
+// SCALE BAR — CORREÇÃO 2: movida para fora do componente
+// CORREÇÃO 3: cálculo de pct corrigido (parênteses explícitos)
+// ══════════════════════════════════════════════════════════════
+function ScaleBar({ label, count, total, color }) {
+  const base = Math.max(total, 1);
+  const pct = Math.min(Math.round((count / base) * 100), 100);
+  let note = "";
+  if (count === 0)   note = "não ativado ainda";
+  else if (pct > 50) note = "área predominante";
+  else if (pct > 25) note = "área ativa";
+  else               note = "área em desenvolvimento";
+
+  return (
+    <div style={{ marginBottom: "20px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+        <span style={{ fontSize: "10px", color, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "'Courier Prime', monospace" }}>{label}</span>
+        <span style={{ fontSize: "10px", color: "#333", fontFamily: "'Courier Prime', monospace" }}>{count} pergunta{count !== 1 ? "s" : ""} · {note}</span>
+      </div>
+      <div style={{ height: "2px", background: "#1a1a1a", borderRadius: "1px", overflow: "hidden" }}>
+        <div style={{ height: "100%", width: pct + "%", background: color, borderRadius: "1px", transition: "width 1s cubic-bezier(.4,0,.2,1)" }} />
+      </div>
+    </div>
+  );
+}
+
+// CORREÇÃO 4: getDiagnosis movida para fora do componente
+function getDiagnosis(sase, midesa, apl, total) {
+  if (total < 3) return "Responda mais perguntas para gerar o seu diagnóstico.";
+  const dominant = Object.entries({ "S.A.S.E.": sase, "MIDESA": midesa, "A.P.L.": apl })
+    .sort((a, b) => b[1] - a[1])[0][0];
+  const msgs = {
+    "S.A.S.E.": "Seu padrão predominante é emocional. A emoção está presente antes da análise. Trabalhe o reconhecimento antes de agir.",
+    "MIDESA":   "Seu padrão predominante é estratégico. Você tende a agir sem mapear completamente o campo. Valide antes de executar.",
+    "A.P.L.":   "Seu padrão predominante é cognitivo. Você questiona pressupostos e conclusões. Cuidado com paralisia por análise.",
+  };
+  return msgs[dominant] || "Continue respondendo para revelar seu padrão predominante.";
+}
+
+// ══════════════════════════════════════════════════════════════
+// FRAMEWORK HEADER
+// ══════════════════════════════════════════════════════════════
+function FrameworkHeader({ method }) {
+  const fw = getFrameworkInfo(method);
+  return (
+    <div style={{ marginBottom: "14px" }}>
+      <div style={{ fontSize: "9px", color: fw.color, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: "4px" }}>
+        ◆ {fw.name}
+      </div>
+      <div style={{ fontSize: "11px", color: "#333", fontStyle: "italic", lineHeight: "1.6" }}>
+        {fw.principle}
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// COMPONENTE PRINCIPAL
+// ══════════════════════════════════════════════════════════════
+const PAUSE_MS = 2000;
+
+function IHIAApp() {
+  const [view, setView]                 = useState("editor");
+  const [text, setText]                 = useState("");
+  const [currentQuestions, setCurrentQuestions] = useState([]);
+  const [currentMethod, setCurrentMethod]       = useState("");
+  const [currentLayer, setCurrentLayer]         = useState("");
+  const [selectedIdx, setSelectedIdx]           = useState(0);
+  const [open, setOpen]                 = useState(false);
+  const [shown, setShown]               = useState(0);
+  const [diary, setDiary]               = useState(() => loadDiary());
+  const [activeEntry, setActiveEntry]   = useState(null);
+  const [answerText, setAnswerText]     = useState("");
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [showAbout, setShowAbout]       = useState(false);
+
+  const timer          = useRef(null);
+  const taRef          = useRef(null);
+  // CORREÇÃO 1: questionOffset inicializado com loadOffsets()
+  const questionOffset = useRef(loadOffsets());
+
+  // Persiste diário sempre que muda
+  useEffect(() => { saveDiary(diary); }, [diary]);
+
+  // CORREÇÃO 1: salva offsets usando função, não dependência de ref
+  // Refs não disparam re-renders — salvamos manualmente em showQuestions
+  const showQuestions = useCallback((val) => {
+    const result = detect(val);
+    if (!result) return;
+    const offset = questionOffset.current[result.layer] || 0;
+    const allQ   = result.questions;
+    const sliced = allQ.slice(offset, offset + 3);
+    const questions = sliced.length >= 1 ? sliced : allQ.slice(0, 3);
+    questionOffset.current[result.layer] = (offset + 3) % allQ.length;
+    saveOffsets(questionOffset.current); // salva imediatamente após atualizar
+    setCurrentQuestions(questions);
+    setCurrentMethod(result.method);
+    setCurrentLayer(result.layer);
+    setSelectedIdx(-1);
+    setOpen(true);
+    setShown(s => s + 1);
+  }, []);
+
+  const acceptQuestion = useCallback((idx) => {
+    if (currentQuestions.length === 0) return;
+    const i = (idx !== undefined) ? idx : selectedIdx;
+    const chosen = currentQuestions[i] || currentQuestions[0];
+    const entry = {
+      id: Date.now(),
+      question: chosen,
+      method: currentMethod,
+      layer: currentLayer,
+      date: new Date().toLocaleDateString("pt-BR"),
+      time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+      answer: "",
+      answered: false,
+    };
+    setDiary(prev => [entry, ...prev]);
+    setOpen(false);
+    setCurrentQuestions([]);
+    setTimeout(() => taRef.current?.focus(), 20);
+  }, [currentQuestions, selectedIdx, currentMethod, currentLayer]);
+
+  const handleChange = useCallback((e) => {
+    const val = e.target.value;
+    setText(val);
+    setOpen(false);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => showQuestions(val), PAUSE_MS);
+  }, [showQuestions]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (!open || currentQuestions.length === 0) return;
+    if (e.key === "Tab")        { e.preventDefault(); acceptQuestion(selectedIdx < 0 ? 0 : selectedIdx); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); setSelectedIdx(p => p < 0 ? 0 : (p + 1) % currentQuestions.length); }
+    else if (e.key === "ArrowUp")   { e.preventDefault(); setSelectedIdx(p => p < 0 ? currentQuestions.length - 1 : (p - 1 + currentQuestions.length) % currentQuestions.length); }
+    else if (e.key === "Escape")    { setOpen(false); setCurrentQuestions([]); }
+  }, [open, currentQuestions, acceptQuestion]);
+
+  const saveAnswer = () => {
+    if (!activeEntry || !answerText.trim()) return;
+    setDiary(prev => prev.map(e =>
+      e.id === activeEntry.id ? { ...e, answer: answerText.trim(), answered: true } : e
+    ));
+    setActiveEntry(null);
+    setAnswerText("");
+  };
+
+  function clearHistory() {
+    setDiary([]);
+    setShown(0);
+    setConfirmClear(false);
+    questionOffset.current = {};
+    saveOffsets({});
+  }
+
+  const wordsCount  = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+  const counts      = diary.reduce((acc, e) => { acc[e.method] = (acc[e.method] || 0) + 1; return acc; }, {});
+  const saseCount   = counts["S.A.S.E."] || 0;
+  const midesaCount = counts["MIDESA"]   || 0;
+  const aplCount    = counts["A.P.L."]   || 0;
+  const methodTotal = saseCount + midesaCount + aplCount; // exclui IHIA da escala
+  const pending     = diary.filter(e => !e.answered).length;
+  const answered    = diary.filter(e => e.answered).length;
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0a0a0a", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 20px", fontFamily: "'Georgia', serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Courier+Prime&display=swap');
+        .ta, .ta-answer {
+          width: 100%; background: #111; border: 1px solid #2a2a2a;
+          border-radius: 4px; color: #e8e8e8; caret-color: #c0c0c0;
+          font-family: 'Courier Prime', monospace; font-size: 15px; line-height: 1.9;
+          padding: 24px; resize: none; outline: none; display: block;
+          transition: border-color .3s;
+        }
+        .ta { min-height: 280px; }
+        .ta-answer { min-height: 120px; }
+        .ta::placeholder, .ta-answer::placeholder { color: #555; }
+        .ta:focus, .ta-answer:focus { border-color: #444; }
+        .tab-btn {
+          background: none; border: none; border-bottom: 2px solid transparent;
+          color: #333; font-family: 'Courier Prime', monospace; font-size: 11px;
+          letter-spacing: 0.12em; text-transform: uppercase;
+          padding: 8px 16px; cursor: pointer; transition: all .2s;
+        }
+        .tab-btn.on { color: #c8c8c8; border-bottom-color: #444; }
+        .tab-btn:hover:not(.on) { color: #666; }
+        .q-panel {
+          background: #111; border-left: 3px solid #2a2a2a;
+          padding: 16px 20px; margin-top: 10px;
+          font-family: 'Courier Prime', monospace; cursor: pointer;
+          transition: border-left-color 0.2s; width: 100%; max-width: 720px;
+        }
+        .q-panel:hover { border-left-color: #555; }
+        .q-text { font-size: 14px; line-height: 1.7; color: #555; padding: 5px 8px; margin-bottom: 3px; }
+        .q-text.sel { border-left: 2px solid #c0c0c0; background: #1a1a1a; color: #e0e0e0; padding-left: 10px; }
+        .q-hint { font-size: 9px; color: #555; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 10px; }
+        .entry-card {
+          background: #111; border: 1px solid #1e1e1e; border-radius: 3px;
+          padding: 18px 20px; margin-bottom: 10px;
+          font-family: 'Courier Prime', monospace; cursor: pointer; transition: border-color .2s;
+        }
+        .entry-card:hover { border-color: #555; }
+        .entry-card.answered { opacity: 0.45; cursor: default; }
+        .btn-primary {
+          background: none; border: 1px solid #333; color: #888;
+          font-family: 'Courier Prime', monospace; font-size: 10px;
+          letter-spacing: 0.1em; text-transform: uppercase;
+          padding: 6px 16px; cursor: pointer; border-radius: 2px; transition: all .2s;
+        }
+        .btn-primary:hover { border-color: #888; color: #c8c8c8; }
+        .badge {
+          display: inline-block; font-size: 8px; letter-spacing: 0.1em;
+          text-transform: uppercase; padding: 2px 8px; border-radius: 2px;
+          font-family: 'Courier Prime', monospace; margin-right: 8px;
+        }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ width: "100%", maxWidth: "720px", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
+        <div>
+          <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "26px", color: "#c8c8c8", letterSpacing: "0.06em", fontWeight: "normal" }}>IHIA</div>
+
+        </div>
+        <div style={{ fontSize: "10px", color: "#555", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>
+          {wordsCount} pal. · {shown} perguntas · {pending} pendentes
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ width: "100%", maxWidth: "720px", borderBottom: "1px solid #1a1a1a", marginBottom: "24px", display: "flex" }}>
+        <button className={`tab-btn${view === "editor" ? " on" : ""}`} onClick={() => setView("editor")}>Escrita</button>
+        <button className={`tab-btn${view === "diary"  ? " on" : ""}`} onClick={() => setView("diary")}>
+          Perguntas aceitas{diary.length > 0 ? ` · ${diary.length}` : ""}
+        </button>
+      </div>
+
+      {/* ── EDITOR ── */}
+      {view === "editor" && (
+        <>
+          <textarea
+            ref={taRef}
+            className="ta"
+            style={{ width: "100%", maxWidth: "720px" }}
+            value={text}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Escreva algo. Quando pausar, o método mostrará perguntas."
+            spellCheck={false}
+          />
+
+          {open && currentQuestions.length > 0 && (
+            <div className="q-panel">
+              <FrameworkHeader method={currentMethod} />
+              {currentQuestions.map((q, idx) => (
+                <div
+                  key={idx}
+                  className={`q-text${idx === selectedIdx ? " sel" : ""}`}
+                  onClick={() => acceptQuestion(idx)}
+                  onMouseEnter={() => setSelectedIdx(idx)}
+                  onMouseLeave={() => setSelectedIdx(-1)}
+                >
+                  {idx === selectedIdx ? "→ " : "   "}{q}
+                </div>
+              ))}
+              <div className="q-hint">Tab · aceitar &nbsp;·&nbsp; ↑↓ navegar &nbsp;·&nbsp; Esc fechar</div>
+            </div>
+          )}
+
+          <div
+            onClick={() => setShowAbout(true)}
+            style={{ width: "100%", maxWidth: "720px", marginTop: "32px", paddingTop: "18px", borderTop: "1px solid #141414", fontSize: "10px", color: "#555", fontFamily: "'Courier Prime', monospace", textAlign: "center", letterSpacing: "0.06em", cursor: "pointer", transition: "color .3s" }}
+            onMouseEnter={e => e.currentTarget.style.color = "#444"}
+            onMouseLeave={e => e.currentTarget.style.color = "#1e1e1e"}
+          >
+            O método que expande a inteligência.
+          </div>
+        </>
+      )}
+
+      {/* ── DIÁRIO ── */}
+      {view === "diary" && (
+        <div style={{ width: "100%", maxWidth: "720px" }}>
+
+          {/* Painel de autoconhecimento */}
+          <div style={{ background: "#0e0e0e", border: "1px solid #1a1a1a", borderRadius: "3px", padding: "24px", marginBottom: "24px" }}>
+            <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "15px", color: "#555", marginBottom: "6px", fontWeight: "normal" }}>
+              Painel de autoconhecimento
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <div style={{ fontSize: "10px", color: "#555", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>
+                {diary.length} aceita{diary.length !== 1 ? "s" : ""} · {answered} respondida{answered !== 1 ? "s" : ""} · {pending} pendente{pending !== 1 ? "s" : ""}
+              </div>
+              {diary.length > 0 && !confirmClear && (
+                <button onClick={() => setConfirmClear(true)} style={{
+                  background: "none", border: "1px solid #2a2a2a", borderRadius: "2px",
+                  color: "#555", fontFamily: "'Courier Prime', monospace",
+                  fontSize: "9px", padding: "3px 10px", cursor: "pointer",
+                  letterSpacing: "0.1em", textTransform: "uppercase", transition: "all .2s",
+                }}>limpar histórico</button>
+              )}
+              {confirmClear && (
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <span style={{ fontSize: "9px", color: "#444", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>confirmar?</span>
+                  <button onClick={clearHistory} style={{
+                    background: "none", border: "1px solid #7a3a3a", borderRadius: "2px",
+                    color: "#7a3a3a", fontFamily: "'Courier Prime', monospace",
+                    fontSize: "9px", padding: "3px 10px", cursor: "pointer",
+                    letterSpacing: "0.1em", textTransform: "uppercase",
+                  }}>sim</button>
+                  <button onClick={() => setConfirmClear(false)} style={{
+                    background: "none", border: "1px solid #2a2a2a", borderRadius: "2px",
+                    color: "#333", fontFamily: "'Courier Prime', monospace",
+                    fontSize: "9px", padding: "3px 10px", cursor: "pointer",
+                    letterSpacing: "0.1em", textTransform: "uppercase",
+                  }}>não</button>
+                </div>
+              )}
+            </div>
+
+            <ScaleBar label="S.A.S.E. — Emoção"       count={saseCount}   total={methodTotal} color="#9b8ec2" />
+            <ScaleBar label="MIDESA — Estratégia"      count={midesaCount} total={methodTotal} color="#6a7a9a" />
+            <ScaleBar label="A.P.L. — Metacognição"    count={aplCount}    total={methodTotal} color="#8a7a6a" />
+
+            {diary.length >= 3 && (
+              <div style={{ marginTop: "16px", padding: "14px 16px", background: "#0a0a0a", border: "1px solid #141414", borderRadius: "2px", fontSize: "12px", color: "#3a3a3a", fontFamily: "'Courier Prime', monospace", fontStyle: "italic", lineHeight: "1.7" }}>
+                ◆ {getDiagnosis(saseCount, midesaCount, aplCount, diary.length)}
+              </div>
+            )}
+          </div>
+
+          {/* Lista */}
+          {diary.length === 0 ? (
+            <div style={{ fontSize: "12px", color: "#555", fontFamily: "'Courier Prime', monospace", textAlign: "center", padding: "40px 0", lineHeight: "2", letterSpacing: "0.06em" }}>
+              Nenhuma pergunta aceita ainda.<br />
+              Escreva na aba Escrita e aceite com Tab.
+            </div>
+          ) : (
+            diary.map(entry => {
+              const fw = getFrameworkInfo(entry.method);
+              return (
+                <div
+                  key={entry.id}
+                  className={`entry-card${entry.answered ? " answered" : ""}`}
+                  onClick={() => { if (!entry.answered) { setActiveEntry(entry); setAnswerText(entry.answer || ""); } }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                    <span className="badge" style={{ background: fw.color + "18", color: fw.color, border: `1px solid ${fw.color}33` }}>
+                      {entry.method}
+                    </span>
+                    <span style={{ fontSize: "9px", color: "#555", fontFamily: "'Courier Prime', monospace" }}>
+                      {entry.date} {entry.time}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "14px", color: entry.answered ? "#333" : "#888", lineHeight: "1.7" }}>
+                    {entry.question}
+                  </div>
+                  {entry.answered && entry.answer && (
+                    <div style={{ fontSize: "12px", color: "#555", fontStyle: "italic", lineHeight: "1.6", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid #1a1a1a" }}>
+                      {entry.answer}
+                    </div>
+                  )}
+                  {!entry.answered && (
+                    <div style={{ fontSize: "9px", color: "#555", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "10px" }}>
+                      clique para responder →
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* Modal de resposta */}
+      {activeEntry && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#000000cc", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", zIndex: 100 }}>
+          <div style={{ background: "#0e0e0e", border: "1px solid #2a2a2a", borderRadius: "4px", padding: "28px", width: "100%", maxWidth: "600px" }}>
+            <div style={{ fontSize: "9px", color: getFrameworkInfo(activeEntry.method).color, letterSpacing: "0.16em", textTransform: "uppercase", fontFamily: "'Courier Prime', monospace", marginBottom: "14px" }}>
+              ◆ {activeEntry.method} — reflexão
+            </div>
+            <div style={{ fontSize: "15px", color: "#aaa", lineHeight: "1.7", fontFamily: "'Courier Prime', monospace", marginBottom: "18px" }}>
+              {activeEntry.question}
+            </div>
+            <textarea
+              className="ta-answer"
+              value={answerText}
+              onChange={e => setAnswerText(e.target.value)}
+              placeholder="Escreva sua reflexão aqui…"
+              autoFocus
+            />
+            {activeEntry.method === "S.A.S.E." && <RespiraGuiada />}
+            {activeEntry.method === "MIDESA"   && <AncoraMIDESA />}
+            {activeEntry.method === "A.P.L."   && <Tratak />}
+            <div style={{ display: "flex", gap: "10px", marginTop: "14px", justifyContent: "flex-end" }}>
+              <button className="btn-primary" onClick={() => { setActiveEntry(null); setAnswerText(""); }}>cancelar</button>
+              <button className="btn-primary" style={{ borderColor: "#555", color: "#c8c8c8" }} onClick={saveAnswer}>salvar reflexão</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal — sobre o app e o livro */}
+      {showAbout && (
+        <div
+          onClick={() => setShowAbout(false)}
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#000000dd", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", zIndex: 200 }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: "#0e0e0e", border: "1px solid #2a2a2a", borderRadius: "4px", padding: "36px 32px", width: "100%", maxWidth: "560px", maxHeight: "90vh", overflowY: "auto" }}
+          >
+            {/* Fechar */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "24px" }}>
+              <button onClick={() => setShowAbout(false)} style={{ background: "none", border: "none", color: "#333", fontFamily: "'Courier Prime', monospace", fontSize: "16px", cursor: "pointer", lineHeight: 1 }}>×</button>
+            </div>
+
+            {/* Gancho */}
+            <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "18px", color: "#c8c8c8", lineHeight: "1.7", marginBottom: "24px", fontStyle: "italic" }}>
+              As perguntas chegaram.<br />As respostas são suas.
+            </div>
+
+            {/* Corpo */}
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#555", lineHeight: "1.9", marginBottom: "28px" }}>
+              <p style={{ marginBottom: "16px" }}>
+                Este app é uma camada do método IHIA — Inteligência Humana Integrada à Artificial. Ele questiona. O livro estrutura.
+              </p>
+              <p style={{ marginBottom: "16px" }}>
+                Cinco frameworks originais formam o ecossistema completo. Aqui você encontrou três deles operando sobre o seu pensamento. Os outros dois — P.R.E.C.I.S.O. e P.A.R.E.D.E. — ensinam como instruir a IA com a mesma precisão que você acabou de aplicar a si mesmo.
+              </p>
+              <p>
+                O método não depende de ferramentas. Depende de raciocínio estruturado, decisão consciente e linguagem precisa.
+              </p>
+            </div>
+
+            {/* Divisor — Livro */}
+            <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: "24px", marginBottom: "24px" }}>
+              <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "16px", color: "#888", marginBottom: "4px" }}>
+                IA Profissional
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#444", lineHeight: "1.7", marginBottom: "16px" }}>
+                Do Marco Zero ao Especialista<br />
+                De Prompt a Protagonismo IHIA
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#888", letterSpacing: "0.04em", marginBottom: "4px" }}>
+                Lin X · 2026
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: "#333", lineHeight: "1.9", marginBottom: "20px" }}>
+                Brochura 978-65-01-90795-6<br />
+                Ebook 978-65-01-90794-9
+              </div>
+
+              {/* Botão — Ver livro */}
+              <div style={{ marginBottom: "8px" }}>
+                <a
+                  href="https://clubedeautores.com.br/livro/ia-profissional-do-marco-zero-ao-especialista"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "inline-block", border: "1px solid #444", borderRadius: "2px", padding: "8px 20px", fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#c8c8c8", letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", transition: "all .2s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#888"; e.currentTarget.style.color = "#ffffff"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#444"; e.currentTarget.style.color = "#c8c8c8"; }}
+                >
+                  ver livro no site oficial
+                </a>
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#555", letterSpacing: "0.08em" }}>
+                Você será redirecionado para um site externo.
+              </div>
+            </div>
+
+            {/* Divisor — Privacidade e isenção */}
+            <div style={{ borderTop: "1px solid #141414", paddingTop: "20px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#555", lineHeight: "1.9", letterSpacing: "0.04em" }}>
+                <div style={{ marginBottom: "10px" }}>
+                  ◆ Este aplicativo não coleta, armazena ou compartilha dados pessoais. Todo o conteúdo permanece exclusivamente no dispositivo do usuário.
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                  ◆ O conteúdo é fornecido "como está", sem garantias de qualquer natureza. As perguntas têm finalidade reflexiva e não substituem acompanhamento profissional de saúde mental.
+                </div>
+                <div>
+                  ◆ Desenvolvido por Lin X · Baseado no livro <span style={{ fontStyle: "italic" }}>IA Profissional</span> · 2026
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(IHIAApp));
+
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(function(r) { console.log('SW ativo:', r.scope); })
+          .catch(function(e) { console.log('SW requer HTTPS:', e.message); });
+      });
+    }
+  </script>
+</body>
+</html>
