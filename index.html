@@ -11,16 +11,13 @@
   <meta name="theme-color" content="#0a0a0a">
   <meta name="description" content="O método que expande a inteligência">
   <title>IHIA</title>
-
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
-
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { background: #0a0a0a; min-height: 100%; }
@@ -30,7 +27,6 @@
 </head>
 <body>
   <div id="root"></div>
-
   <script>
     (function() {
       var w = console.warn;
@@ -40,7 +36,6 @@
       };
     })();
   </script>
-
   <script type="text/babel" data-presets="react">
     const { useState, useRef, useCallback, useEffect } = React;
 
@@ -50,61 +45,729 @@
 // ══════════════════════════════════════════════════════════════
 const TRIGGER_MAP = [
 
+  // ═══════ ESPECÍFICOS ═══════
+
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. ETAPA 1 — Reconhecimento da emoção
+  // S.A.S.E. — estar perdido
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — estar perdido", method: "S.A.S.E.",
+    patterns: [
+      "perdida",
+      "perdido",
+      "sem direção",
+    ],
+    questions: ["Se o seu sentimento de 'estar perdido' fosse um mapa, o que estaria desenhado nele: um deserto, uma névoa ou uma encruzilhada?",
+      "O que exatamente está incerto: o caminho que você deve tomar ou a sua capacidade de caminhar?",
+      "Quando você se sente perdido, o que costuma fazer primeiro: buscar ajuda externa ou tentar se localizar sozinho?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — segredo
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — segredo", method: "S.A.S.E.",
+    patterns: [
+      "segredo",
+      "não contei",
+      "não vou contar",
+      "omitir",
+      "não vou falar nada a ninguém",
+    ],
+    questions: ["O que esse segredo está protegendo: a sua imagem ou a sua vulnerabilidade?",
+      "Qual o peso real de carregar o 'não contei' em comparação ao medo da reação das pessoas?",
+      "Se esse segredo fosse revelado hoje, o que mudaria na sua percepção de liberdade?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — arrogância
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — arrogância", method: "S.A.S.E.",
+    patterns: [
+      "arrogante",
+      "arrogância",
+      "petulante",
+      "petulância",
+    ],
+    questions: ["Ao rotular alguém como 'arrogante', qual parte da sua própria segurança você sente que está sendo ameaçada?",
+      "A 'arrogância' que você percebe é um fato sobre o outro ou uma interpretação sua sobre uma postura mais firme?",
+      "O que você faria diferente se acreditasse que aquela pessoa não está sendo arrogante, apenas direta?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — inveja
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — inveja", method: "S.A.S.E.",
+    patterns: [
+      "inveja",
+      "invejoso",
+      "invejosa",
+    ],
+    questions: ["O que a conquista do outro está despertando em você — admiração ou inveja?",
+      "Se você não pudesse se comparar a ninguém, como saberia que é bom?",
+      "O que você inveja em alguém que poderia desenvolver em si mesmo?",
+    ],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — falsidade
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — falsidade", method: "S.A.S.E.",
+    patterns: [
+      "falso",
+      "falsa",
+      "falsidade",
+      "sofismas",
+      "sofisma",
+      "mentira",
+    ],
+    questions: ["O que te faz perceber que algo é falso? É um fato ou uma sensação?",
+      "Essa falsidade está vindo de outra pessoa ou de uma expectativa sua quebrada?",
+      "Se você pudesse confrontar essa mentira com uma só verdade, qual seria?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — confusão
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — confusão", method: "S.A.S.E.",
+    patterns: [
+      "confuso",
+      "confusa",
+      "confusão",
+      "dúvida",
+      "duvido",
+      "estou com dúvidas",
+    ],
+    questions: ["Essa dúvida é um sinal de falta de informação ou um medo de escolher a opção errada?",
+      "O que aconteceria se você agisse mesmo sem ter todas as respostas?",
+      "A confusão que você sente está dentro de você ou está sendo projetada pelo ambiente ao redor?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — insulto
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — insulto", method: "S.A.S.E.",
+    patterns: [
+      "insulto",
+      "inferno",
+      "insultado",
+      "insultada",
+    ],
+    questions: ["Quando você descreve esse cenário como um 'inferno', quais são os gatilhos que mais queimam a sua paz?",
+      "O insulto que você recebeu diz mais sobre quem o proferiu ou sobre você?",
+      "Se você não reagisse a esse insulto, o que estaria protegendo em si mesmo?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — zombaria
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — zombaria", method: "S.A.S.E.",
+    patterns: [
+      "zombam",
+      "zombar",
+      "zombaria",
+      "zombada",
+      "escarnecer",
+      "escarnecedores",
+      "escarnecedor",
+      "escarnecedora",
+      "escarnecido",
+      "escarnecida",
+    ],
+    questions: ["A 'zombaria' dos outros é um fato sobre quem você é ou um reflexo da imaturidade de quem observa?",
+      "O que na sua história te faz dar tanta importância à opinião de quem zomba?",
+      "Se você ignorasse completamente essa zombaria, o que ganharia?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — egoísmo
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — egoísmo", method: "S.A.S.E.",
+    patterns: [
+      "egoísta",
+      "egoísmo",
+    ],
+    questions: ["O que o 'egoísmo' do outro está impedindo você de fazer por si mesmo?",
+      "Se você trocasse de lugar com a pessoa que considera egoísta, agiria da mesma forma?",
+      "Onde termina o cuidado com o outro e começa o abandono de si mesmo?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — luto e perda
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — luto e perda", method: "S.A.S.E.",
+    patterns: [
+      "perdi meu",
+      "perdi minha",
+      "perdi a",
+      "perdi o",
+      "perda do meu",
+      "perda da minha",
+      "falecimento",
+      "morreu",
+      "se foi",
+      "não está mais aqui",
+      "despedida",
+      "última vez que vi",
+      "enterro",
+      "cremação",
+      "luto",
+      "de luto",
+    ],
+    questions: ["O que você não disse a essa pessoa e gostaria de ter dito?",
+      "Esse luto é sobre a ausência dela ou sobre a parte de você que morreu junto?",
+      "O que você está permitindo sentir — e o que está empurrando para depois?",
+      "Se você pudesse escrever uma carta sem enviar, o que estaria nela?",
+      "Como você tem cuidado de si mesmo enquanto carrega essa falta?",
+      "O que ainda te anima, mesmo quando tudo parece difícil?",
+      "O que a perda ou a falta está te ensinando?",
+      "Se você pudesse dizer adeus a algo que te segura, o que seria?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. + MIDESA — perda de emprego
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. + MIDESA — perda de emprego", method: "S.A.S.E.",
+    patterns: [
+      "perdi meu emprego",
+      "fui demitido",
+      "fui demitida",
+      "demissão",
+      "me mandaram embora",
+      "desempregado",
+      "desempregada",
+      "desemprego",
+      "perdi o trabalho",
+    ],
+    questions: ["Quais sentimentos surgem com mais força quando você pensa na demissão?",
+      "O que essa perda representa para você além da questão financeira?",
+      "Como você tem lidado com o estresse e a ansiedade relacionados a essa mudança?",
+      "De que forma você pode acolher a tristeza ou a raiva deste momento sem ser consumido por elas?",
+      "De que maneira a sua identidade estava atrelada ao seu cargo anterior?",
+      "Quais habilidades e pontos fortes você demonstrou na sua trajetória que ninguém pode tirar de você?",
+      "Você consegue diferenciar seu valor como pessoa do seu valor profissional?",
+      "Que crenças limitantes sobre si mesmo surgiram após a perda do emprego?",
+      "Que novas oportunidades ou caminhos este momento de transição permite enxergar?",
+      "Quais pequenas metas, profissionais ou pessoais, podemos definir para esta semana?",
+      "O que você deseja mudar no seu jeito de trabalhar ou viver hoje?",
+      "Se o medo não fosse um fator, o que você faria de diferente agora?",
+      "O que você aprendeu com essa experiência que o ajudará na sua próxima etapa profissional?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — relacionamento abusivo e desrespeito
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — relacionamento abusivo e desrespeito", method: "S.A.S.E.",
+    patterns: [
+      "falta de respeito",
+      "não me respeita",
+      "não me respeitam",
+      "me desrespeitou",
+      "tratou mal",
+      "me trataram mal",
+      "gaslighting",
+      "manipulador",
+      "manipuladora",
+      "faz eu duvidar de mim",
+      "não respeito ninguém",
+      "eu não sou de baixar a cabeça pra ninguém",
+      "me confronta",
+      "me afronta",
+      "me provoca",
+      "me tira do sério",
+      "distorce a realidade",
+      "minha percepção está errada",
+      "sempre eu que peço desculpas",
+      "caminhar em ovos",
+      "medo de reagir",
+      "isso é um abuso",
+      "pérfido",
+      "perfida",
+      "zomba de mim",
+      "me escarnece",
+      "escarnecida",
+      "escarnecido",
+      "escarnecedores",
+      "escarnecedor",
+      "escarnecedora",
+      "chantagem emocional",
+      "culpa por não atender",
+      "ciclo de violência",
+      "abusador",
+      "abusadora",
+      "invadiu minha",
+      "invadiu meu",
+      "intromissão",
+      "intrometido",
+    ],
+    questions: ["O que você sente no seu corpo quando essa pessoa te procura?",
+      "Se um amigo te contasse exatamente essa história, qual seria o seu conselho?",
+      "Onde termina a responsabilidade do outro e começa a sua?",
+      "Você está escolhendo ficar ou está acreditando que não tem escolha?",
+      "O que você precisa acreditar para sair dessa relação?",
+      "O que você está tolerando que deveria ter um limite?",
+      "Você está comunicando claramente as suas necessidades ou está esperando que alguém adivinhe?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. — síndrome do impostor
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — síndrome do impostor", method: "A.P.L.",
+    patterns: [
+      "sou uma fraude",
+      "sou uma farsa",
+      "vão descobrir que não sei",
+      "não mereço estar aqui",
+      "qualquer hora me desmascaram",
+      "foi sorte, não competência",
+      "sucesso foi acaso",
+      "não me sinto qualificado",
+      "não me sinto qualificada",
+      "medo de ser avaliado",
+      "medo de ser avaliada",
+      "impostor",
+      "impostora",
+      "não sirvo para nada",
+      "sem talento",
+      "inutilidade",
+      "inúteis",
+      "inútil",
+    ],
+    questions: ["Que evidência concreta você tem de que é uma fraude — e que evidência de que é competente?",
+      "Se você aceitasse que merece o que conquistou, o que mudaria no seu comportamento amanhã?",
+      "Quem na sua história se beneficiaria se você continuasse duvidando de si?",
+      "O que você está confundindo: humildade ou autoanulação?",
+      "Se ninguém pudesse te avaliar, você ainda faria o que faz?",
+      "Que prova você já tem de que pode confiar em si mesmo — e por que ignora?",
+      "Quem foi a primeira pessoa que te convenceu de que o seu valor depende exclusivamente de um 'talento' específico?",
+      "O que você já fez recentemente que foi útil para alguém, por menor que pareça?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // MIDESA — procrastinação
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — procrastinação", method: "MIDESA",
+    patterns: [
+      "deixo para última hora",
+      "faço no desespero",
+      "só funciono sob pressão",
+      "evito começar",
+      "travo antes de iniciar",
+      "não é o momento perfeito",
+      "quando estiver motivado",
+      "não consigo disciplinar",
+      "prazo me paralisa",
+      "medo de entregar algo ruim",
+      "procrastino",
+      "adiar",
+      "enrolando",
+      "depois eu faço",
+      "preguiça",
+      "com preguiça",
+      "sou preguiçoso",
+      "sou preguiçosa",
+      "estou com preguiça",
+      "dá preguiça",
+      "não tenho vontade de fazer nada",
+      "sem vontade",
+      "tudo me cansa",
+      "nada me anima",
+      "não animo",
+      "estou entediado",
+      "estou entediada",
+      "tédio",
+      "entediado",
+      "entediada",
+      "desmotivado",
+      "desmotivada",
+      "sem energia mental",
+    ],
+    questions: ["O que você está evitando sentir ao adiar essa tarefa específica?",
+      "Se você fizesse essa tarefa de forma propositalmente imperfeita, o pior que pode acontecer é…?",
+      "A procrastinação está te protegendo de um julgamento ou de uma decepção?",
+      "O que você ganha ao manter essa tarefa como pendente?",
+      "Qual é o primeiro passo de menos de 5 minutos que você pode dar agora?",
+      "O que é 'bom o suficiente' aqui?",
+      "Que decisão você está adiando?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. — conflito ético
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — conflito ético", method: "A.P.L.",
+    patterns: [
+      "contra meus princípios",
+      "vou trair minha consciência",
+      "ganhar vantagem errada",
+      "mentir por necessidade",
+      "omissão",
+      "conflito de valores",
+      "dilema ético",
+      "certo vs errado",
+      "não sei o que é certo",
+      "preocupação moral",
+    ],
+    questions: ["Que valor seu está sendo ferido — e que valor está sendo protegido?",
+      "Se isso fosse parar na primeira página do jornal, você agiria da mesma forma?",
+      "O que você diria para a pessoa que você mais respeita se ela estivesse na sua posição?",
+      "Você está escolhendo entre o certo e o errado ou entre dois certos que se chocam?",
+      "Daqui a cinco anos, qual decisão te trará mais paz?",
+      "O que você aprendeu sobre si mesmo com essa preocupação?",
+      "Como você pode ressignificar esse pensamento para torná-lo útil?",
+      "Qual é a preocupação que mais consome sua energia no momento?",
+      "Você consegue identificar algum gatilho emocional relacionado ao estresse ou à ansiedade?",
+      "Qual é a evidência para o seu pensamento, crença ou avaliação?",
+      "Esse pensamento faz sentido sob uma perspectiva realista?",
+      "Você está sendo muito severo consigo mesmo?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — ciúmes e controle
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — ciúmes e controle", method: "S.A.S.E.",
+    patterns: [
+      "tenho ciúmes",
+      "sinto ciúmes",
+      "ciúmes doentio",
+      "ciúmes excessivo",
+      "sou ciumento",
+      "sou ciumenta",
+      "ele é muito ciumento",
+      "ela é muito ciumenta",
+      "morrendo de ciúmes",
+      "ciúmes de",
+      "com ciúmes de",
+      "ele me pertence",
+      "ela me pertence",
+      "age como se fosse meu dono",
+      "age como se fosse minha dona",
+      "posse sobre",
+      "controlar o outro",
+      "medo de perder",
+      "traição imaginária",
+      "insegurança no relacionamento",
+      "monitoro o que faz",
+      "invado a privacidade",
+      "revisei o celular",
+    ],
+    questions: ["O que o ciúme está tentando exercer: cuidado ou domínio?",
+      "O que você acredita que vai conseguir monitorando o outro?",
+      "Esse ciúme é sobre o que o outro faz ou sobre o que você teme que revele sobre você?",
+      "Quão insuportável está se tornando a relação por causa da sua insegurança?",
+      "Qual é o medo real que está por trás da sua insegurança: rejeição, falhar ou não ser 'bom o suficiente'?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — solidão e término
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "S.A.S.E. — solidão e término", method: "S.A.S.E.",
+    patterns: [
+      "meu casamento acabou",
+      "o casamento acabou",
+      "meu casamento está um fracasso",
+      "separação",
+      "divórcio",
+      "pedi separação",
+      "estou me separando",
+      "a relação acabou",
+      "fim do namoro",
+      "terminamos",
+      "me traiu",
+      "fui traído",
+      "fui traída",
+      "traição",
+      "não me quer mais",
+      "não quero mais ficar com ele",
+      "não quero mais ficar com ela",
+      "não quero me separar",
+      "quero ele de volta",
+      "quero ela de volta",
+      "estou só",
+      "não tenho ninguém",
+      "me sinto sozinho",
+      "solidão",
+    ],
+    questions: ["O que exatamente faz falta: a pessoa real que estava ao seu lado ou a ideia de quem você gostaria que ela fosse?",
+      "Quais necessidades emocionais eram supridas por essa relação que você sente que não consegue suprir sozinho agora?",
+      "Se você pudesse observar o relacionamento 'de fora', quais sinais de que ele não estava funcionando você ignorou?",
+      "A solidão que você sente é o medo de estar sozinho ou a dor de não estar com aquela pessoa específica?",
+      "Como você costumava desfrutar da sua própria companhia antes dessa relação? O que mudou?",
+      "Que partes de você 'adormeceram' durante o namoro e podem ser despertadas agora?",
+      "Quem é você agora que não é mais o 'par' de alguém? O que define você além do status de relacionamento?",
+      "Quais projetos, hobbies ou amizades você deixou em segundo plano e gostaria de retomar?",
+      "De que forma você pode transformar a solidão em solitude — o prazer de estar consigo mesmo?",
+      "Que aprendizado sobre os seus próprios limites e desejos você leva dessa experiência para o futuro?",
+      "Como seria um dia em que você se sentisse completo e em paz, mesmo estando solteiro?",
+      "Qual é a imagem ou pensamento sobre a traição que mais invade sua mente hoje?",
+      "Como essa quebra de confiança afetou a percepção que você tem de si mesmo e do seu valor?",
+      "Você consegue identificar que a escolha de trair foi uma decisão do outro, baseada nas limitações dele?",
+      "O que você sente que 'perdeu' com essa traição: a pessoa, o futuro planejado ou a sua paz de espírito?",
+      "De que maneira você está se punindo por algo que não foi sua escolha?",
+      "O que seria necessário acontecer para você voltar a se sentir minimamente seguro?",
+      "O que você precisa liberar — sentimentos, expectativas ou lembranças — para recuperar sua autonomia emocional?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // MIDESA — contexto profissional
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "MIDESA — contexto profissional", method: "MIDESA",
+    patterns: [
+      "cliente",
+      "meu cliente",
+      "atender cliente",
+      "prazo do cliente",
+      "exigência do cliente",
+    ],
+    questions: ["Como você diferencia o que é uma urgência processual do que é uma urgência interna sua?",
+      "Qual é o custo emocional de cada decisão ou prazo cumprido hoje?",
+      "Você consegue identificar sinais físicos antes de atingir o esgotamento total?",
+      "Até que ponto a história do seu cliente está se tornando a sua própria história?",
+      "O que você sente ao precisar decidir sobre a vida de alguém, e onde você guarda esse sentimento?",
+      "Como você cultiva a empatia sem permitir que ela comprometa sua saúde mental ou objetividade técnica?",
+      "Qual valor pessoal seu está sendo testado ou ignorado neste caso específico?",
+      "Como você lida com a frustração de uma decisão que não parece moralmente justa para você?",
+      "O que o prazo representa para você além de uma data no calendário?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. — criatividade bloqueada
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — criatividade bloqueada", method: "A.P.L.",
+    patterns: [
+      "bloqueio criativo",
+      "não consigo criar",
+      "não tenho ideias",
+      "página em branco",
+      "trava criativa",
+      "não consigo escrever",
+      "não consigo terminar",
+      "projeto parado",
+      "sem inspiração",
+    ],
+    questions: ["Se este projeto não pudesse ser julgado por ninguém, o que você estaria fazendo agora?",
+      "O que você está tentando proteger ao não criar nada neste momento?",
+      "Qual é a 'voz' que aparece na sua cabeça quando você senta para produzir? O que exatamente ela diz?",
+      "Se o fracasso fosse uma certeza, como seria a versão mais 'feia' e libertadora dessa ideia?",
+      "Como seria esse trabalho se ele fosse fácil e divertido em vez de importante?",
+      "Qual é a menor ação possível que você pode tomar hoje que não exija genialidade?",
+      "Você está tentando criar e editar ao mesmo tempo? O que aconteceria se você silenciasse o editor por 15 minutos?",
+      "Quem é a pessoa que você mais teme decepcionar com um trabalho mediano?",
+      "A sua identidade depende inteiramente da qualidade dessa entrega específica?",
+      "Qual parte desse projeto ainda te desperta curiosidade, esquecendo a parte que te gera obrigação?",
+      "Quais rituais sinalizam para o seu cérebro que ele está em um espaço de jogo, e não de trabalho?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. — ruminação sobre o passado
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — ruminação sobre o passado", method: "A.P.L.",
+    patterns: [
+      "fico ruminando",
+      "não consigo parar de pensar naquilo",
+      "fico repassando o que aconteceu",
+      "não consigo esquecer",
+      "pensamento recorrente",
+      "fica martelando",
+      "pra que eu fui fazer isso",
+      "aquela cena fica na minha cabeça",
+      "não paro de reviver",
+      "fico pensando no que poderia ter feito diferente",
+      "estou arrependido",
+      "estou arrependida",
+      "me arrependo de",
+      "não devia ter feito",
+      "remorso",
+    ],
+    questions: ["Se houvesse uma câmera filmando a cena, o que ela veria — apenas imagens e sons, sem julgamentos?",
+      "Quanto do que você sente hoje vem do que aconteceu e quanto vem do que você diz a si mesmo sobre o que aconteceu?",
+      "Quais evidências concretas sustentam a sua versão e quais evidências a contradizem?",
+      "Se outra pessoa estivesse no seu lugar, ela descreveria a cena exatamente da mesma forma?",
+      "O que você não sabia na época que sabe agora e que poderia ter mudado sua percepção?",
+      "Quais eram as limitações das outras pessoas envolvidas naquele momento?",
+      "Você está focando apenas no detalhe negativo e ignorando todo o resto do contexto?",
+      "Qual é a 'verdade absoluta' que você criou sobre esse fato e como ela te aprisiona?",
+      "O que esse fato ensinou sobre a sua capacidade de sobrevivência ou resiliência?",
+      "Se você pudesse voltar no tempo como o seu 'eu atual', o que diria para o seu 'eu do passado' naquela cena?",
+      "Que nome você daria a esse capítulo da sua vida se ele fosse um livro, trocando 'Tragédia' por algo que indique movimento?",
+      "O que você ganha ao reviver esse fato repetidamente da mesma maneira?",
+      "O que aconteceria se você decidisse que esse fato não define mais quem você é hoje?",
+      "Qual parte dessa história você está pronto para deixar no passado?",],
+  },
+  // ─────────────────────────────────────────────────────────
+  // A.P.L. — percepção distorcida
+  // ─────────────────────────────────────────────────────────
+  {
+    layer: "A.P.L. — percepção distorcida", method: "A.P.L.",
+    patterns: [
+      "sinto que fui desrespeitado",
+      "sinto que fui desrespeitada",
+      "foi uma falta de respeito",
+      "me trataram mal",
+      "me ignoraram de propósito",
+      "ninguém liga para mim",
+      "todo mundo age contra mim",
+      "perseguição",
+      "injustiça",
+    ],
+    questions: ["Será que o que você sente como desrespeito não seria, na verdade, apenas uma discordância de opinião?",
+      "Você já parou para pensar se o outro não está apenas reagindo à sua própria ação?",
+      "O que mais condena não seria o julgamento que você faz sobre o que supõe?",
+      "Será que quem relata um fato não possui sempre uma versão própria? E se essa versão for o modo como você internaliza os acontecimentos?",
+      "Se você fosse um observador neutro sentado no canto da sala, como descreveria a dinâmica daquela situação?",
+      "Você está assumindo responsabilidade total por algo que teve múltiplos fatores fora do seu controle?",],
+  },
+
+  // ═══════ GENÉRICOS ═══════
+
+  // ─────────────────────────────────────────────────────────
+  // S.A.S.E. — reconhecimento
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. — reconhecimento", method: "S.A.S.E.",
     patterns: [
-      "estou sentindo", "estou me sentindo", "me sinto", "sinto que", "sinto ",
-      "estou triste", "estou com raiva", "estou frustrado", "estou frustrada",
-      "estou ansioso", "estou ansiosa", "estou angustiado", "estou angustiada",
-      "estou com medo", "estou sobrecarregado", "estou sobrecarregada",
-      "estou cansado", "estou cansada", "estou esgotado", "estou esgotada",
-      "estou sozinho", "estou sozinha", "estou vazio", "estou vazia",
-      "estou mal", "me sinto mal", "triste", "angústia", "solidão", "saudade",
-      "magoado", "magoada", "decepcionado", "decepcionada", "humilhado", "humilhada",
-      "emoção", "sentimento", "afeto", "raiva", "ansiedade", "esgotamento",
-      "emocionado", "emocionada", "fora de controle",
-      "chorar", "choro", "estou chorando", "vontade de chorar",
-      "irritado", "irritada", "incomodado", "incomodada",
-      "impotente", "desesperado", "desesperada", "sem saída",
-      "vergonha", "culpa", "arrependimento", "remorso",
-      "estresse", "stress", "estressada", "estressado",
-      "depressão", "depressiva", "depressivo",
-      "pânico", "nervoso", "nervosa",
-      "agressividade", "agressivo", "agressiva",
-      "explosiva", "explosivo", "impulsos", "impulsivo", "impulsiva",
-      "manipulação", "manipulado", "manipulada",
-      "insatisfação", "insatisfeito", "insatisfeita",
-      "aflição", "aflito", "aflita", "desassossego",
-      "tormento", "atormenta", "atormentando", "atormentado",
-      "horrível", "horror", "ruim",
-      "rejeição", "rejeitaram", "ser aceito", "fazer parte",
-      "ciúmes", "ciumenta", "ciumento",
-      "inveja", "invejoso", "invejosa",
-      "orgulhoso", "orgulhosa", "orgulho",
-      "ridícula", "ridículo",
-      "abuso", "abusada", "abusado",
-      "desrespeito", "desrespeitado", "desrespeitada",
-      "invadido", "invadida", "invade",
-      "invalidar", "invalidação", "inválido", "inválida",
-      "perdão", "perdoar", "perdoado", "perdoada",
-      "estou mal", "me sinto mal", "sinto mal", "me faz mal",
-      "está mal", "está mau", "mau humor", "de mau",
-      "ferida antiga", "mágoa antiga", "magoou", "lembrança que dói",
-      "aquilo que aconteceu", "meu valor", "não me respeitam",
-      "não valoriza", "fugir de sentir", "não quero sentir",
-      "perdi", "falta de", "adeus", "dizer adeus",
-      "me segura", "preso", "amarrado", "não consigo soltar",
-      "animar", "esperança", "lado bom", "apesar de tudo",
-      "estou suportando", "passando dos limites",
-      "desamparar", "desamparo", "desamparado", "desamparada",
-      "sem chão", "inadequado", "inadequada",
-      "fracasso", "falência", "derrota",
+      "estou sentindo",
+      "estou me sentindo",
+      "me sinto",
+      "sinto que",
+      "sinto ",
+      "estou triste",
+      "estou com raiva",
+      "estou frustrado",
+      "estou frustrada",
+      "estou ansioso",
+      "estou ansiosa",
+      "estou angustiado",
+      "estou angustiada",
+      "estou com medo",
+      "estou sobrecarregado",
+      "estou sobrecarregada",
+      "estou cansado",
+      "estou cansada",
+      "estou esgotado",
+      "estou esgotada",
+      "estou sozinho",
+      "estou sozinha",
+      "estou vazio",
+      "estou vazia",
+      "estou mal",
+      "me sinto mal",
+      "triste",
+      "angústia",
+      "saudade",
+      "magoado",
+      "magoada",
+      "decepcionado",
+      "decepcionada",
+      "humilhado",
+      "humilhada",
+      "emoção",
+      "sentimento",
+      "afeto",
+      "raiva",
+      "ansiedade",
+      "esgotamento",
+      "emocionado",
+      "emocionada",
+      "fora de controle",
+      "chorar",
+      "choro",
+      "estou chorando",
+      "vontade de chorar",
+      "irritado",
+      "irritada",
+      "incomodado",
+      "incomodada",
+      "impotente",
+      "desesperado",
+      "desesperada",
+      "sem saída",
+      "vergonha",
+      "culpa",
+      "arrependimento",
+      "remorso",
+      "estresse",
+      "stress",
+      "estressada",
+      "estressado",
+      "depressão",
+      "depressiva",
+      "depressivo",
+      "pânico",
+      "nervoso",
+      "nervosa",
+      "agressividade",
+      "agressivo",
+      "agressiva",
+      "explosiva",
+      "explosivo",
+      "impulsos",
+      "impulsivo",
+      "impulsiva",
+      "manipulação",
+      "manipulado",
+      "manipulada",
+      "insatisfação",
+      "insatisfeito",
+      "insatisfeita",
+      "aflição",
+      "aflito",
+      "aflita",
+      "desassossego",
+      "tormento",
+      "atormenta",
+      "atormentando",
+      "atormentado",
+      "horrível",
+      "horror",
+      "ruim",
+      "ciumenta",
+      "ciumento",
+      "orgulhoso",
+      "orgulhosa",
+      "orgulho",
+      "ridícula",
+      "ridículo",
+      "estou mal",
+      "me sinto mal",
+      "sinto mal",
+      "me faz mal",
+      "está mal",
+      "está mau",
+      "mau humor",
+      "de mau",
+      "ferida antiga",
+      "mágoa antiga",
+      "magoou",
+      "lembrança que dói",
+      "aquilo que aconteceu",
+      "meu valor",
+      "não me respeitam",
+      "não valoriza",
+      "fugir de sentir",
+      "não quero sentir",
+      "adeus",
+      "dizer adeus",
+      "me segura",
+      "preso",
+      "amarrado",
+      "não consigo soltar",
+      "animar",
+      "esperança",
+      "lado bom",
+      "apesar de tudo",
+      "estou suportando",
+      "passando dos limites",
+      "desamparar",
+      "desamparo",
+      "desamparado",
+      "desamparada",
+      "sem chão",
+      "inadequado",
+      "inadequada",
+      "fracasso",
+      "falência",
+      "derrota",
     ],
-    questions: [
-      "O que você está sentindo agora, com precisão?",
+    questions: ["O que você está sentindo agora, com precisão?",
       "Qual é o nome exato dessa emoção: é raiva ou é, na verdade, humilhação ou medo?",
       "Esse sentimento é sobre o que aconteceu ou sobre o que você teme que aconteça?",
       "Se você nomeasse essa emoção com uma só palavra, qual seria?",
@@ -131,34 +794,64 @@ const TRIGGER_MAP = [
       "Se você remover o que passou e o que supostamente virá, o que forma o seu agora?",
       "Quando você se comportou da maneira da qual agora se arrepende, qual das suas necessidades buscava atender?",
       "Quais os sentimentos e necessidades por trás de cada fala?",
-    ],
+      "O que exatamente está incerto: o caminho que você deve tomar ou a sua capacidade de caminhar?",
+      "Essa dúvida é um sinal de falta de informação ou um medo de escolher a opção errada?",
+      "Ao rotular essa situação ou pessoa como 'arrogante' ou 'falsa', qual parte da sua própria segurança você sente que está sendo ameaçada?",
+      "Quando você descreve esse cenário como um 'inferno', quais são os gatilhos que mais queimam a sua paz?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. ETAPA 2 — Autocontrole sob impulso
+  // S.A.S.E. — autocontrole
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. — autocontrole", method: "S.A.S.E.",
     patterns: [
-      "vou mandar", "vou falar", "vou responder", "vou fazer agora",
-      "não aguento mais", "chega", "não vou tolerar",
-      "preciso agir agora", "vou resolver", "vou confrontar", "vou embora",
-      "não vou aceitar", "isso é pessoal", "me senti atacado", "me sinto atacado", "me sinto atacada",
-      "me traiu", "me traíram", "não é justo", "é uma injustiça",
-      "estou com raiva de", "não suporto", "odeio isso",
-      "vou explodir", "não consigo segurar",
-      "quero brigar", "vou falar o que penso",
-      "rompeu meu limite", "passou dos limites",
-      "grosso", "grosseria", "passividade",
-      "intromissão", "intromissivo", "intrometer", "invasivo",
-      "controle", "manipular",
-      "sarcasmo", "exagero", "exagerado",
-      "explosivo", "explosiva",
-      "briga", "poder", "poderoso", "poderosa",
+      "vou mandar",
+      "vou falar",
+      "vou responder",
+      "vou fazer agora",
+      "não aguento mais",
+      "chega",
+      "não vou tolerar",
+      "preciso agir agora",
+      "vou resolver",
+      "vou confrontar",
+      "vou embora",
+      "não vou aceitar",
+      "isso é pessoal",
+      "me senti atacado",
+      "me sinto atacado",
+      "me sinto atacada",
+      "me traiu",
+      "me traíram",
+      "não é justo",
+      "é uma injustiça",
+      "estou com raiva de",
+      "não suporto",
+      "odeio isso",
+      "vou explodir",
+      "não consigo segurar",
+      "quero brigar",
+      "vou falar o que penso",
+      "rompeu meu limite",
+      "passou dos limites",
+      "grosso",
+      "grosseria",
+      "passividade",
+      "invasivo",
+      "controle",
+      "manipular",
+      "sarcasmo",
+      "exagero",
+      "exagerado",
+      "explosivo",
+      "explosiva",
+      "briga",
+      "poder",
+      "poderoso",
+      "poderosa",
       "não vou",
     ],
-    questions: [
-      "Se isso fosse sobre outra pessoa, qual seria o seu conselho?",
+    questions: ["Se isso fosse sobre outra pessoa, qual seria o seu conselho?",
       "Você tomaria essa decisão da mesma forma se estivesse em paz?",
       "O que você está prestes a fazer que o seu eu mais lúcido não faria?",
       "Qual parte disso é fato e qual parte é interpretação sua?",
@@ -175,27 +868,36 @@ const TRIGGER_MAP = [
       "O que você perde ao sempre tentar estar certo?",
       "Que mentira pequena você conta para evitar um conflito?",
       "Que conversa você adia porque teme a reação, não o conteúdo?",
-      "Você está comunicando claramente as suas necessidades ou está esperando que alguém adivinhe?",
-    ],
+      "Você está comunicando claramente as suas necessidades ou está esperando que alguém adivinhe?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. ETAPA 3 — Busca por alívio
+  // S.A.S.E. — execução
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. — execução", method: "S.A.S.E.",
     patterns: [
-      "quero que acabe", "quero resolver logo", "só quero paz",
-      "preciso de alívio", "quero sair disso", "quero parar de pensar",
-      "quero esquecer", "não consigo mais", "estou no limite",
-      "não tenho mais energia", "estou exausto", "estou exausta",
-      "quero desaparecer", "quero sumir",
-      "não aguento mais pensar", "minha cabeça vai explodir",
-      "evitar", "evitação", "bloqueio",
+      "quero que acabe",
+      "quero resolver logo",
+      "só quero paz",
+      "preciso de alívio",
+      "quero sair disso",
+      "quero parar de pensar",
+      "quero esquecer",
+      "não consigo mais",
+      "estou no limite",
+      "não tenho mais energia",
+      "estou exausto",
+      "estou exausta",
+      "quero desaparecer",
+      "quero sumir",
+      "não aguento mais pensar",
+      "minha cabeça vai explodir",
+      "evitar",
+      "evitação",
+      "bloqueio",
       "privação",
     ],
-    questions: [
-      "O que essa emoção está protegendo?",
+    questions: ["O que essa emoção está protegendo?",
       "Qual ação, mesmo pequena, estaria alinhada com o que você realmente quer?",
       "Se você agir agora, será por clareza ou por alívio?",
       "Você está tentando suprimir esse sentimento ou permite que ele atravesse o seu corpo?",
@@ -207,25 +909,37 @@ const TRIGGER_MAP = [
       "O que você está esperando que aconteça para se permitir ser feliz?",
       "O que você pode delegar ou eliminar da sua rotina hoje para diminuir sua carga mental?",
       "Que pequena coisa de hoje você pode agradecer sem filtro?",
-      "Respire fundo. Inspire 4, segure 4, expire 4 — o quanto acalma?",
-    ],
+      "Respire fundo. Inspire 4, segure 4, expire 4 — o quanto acalma?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. — Medo e pânico
+  // S.A.S.E. — medo
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. — medo", method: "S.A.S.E.",
     patterns: [
-      "tenho medo", "medo de", "com medo de", "receio que", "temo que",
-      "apavorado", "apavorada", "assustado", "assustada",
-      "vulnerável", "ameaçado", "ameaçada",
-      "fragilizado", "fragilizada", "exposto", "exposta",
-      "pavor", "terror",
-      "não acredito", "não confio", "confiança",
+      "tenho medo",
+      "medo de",
+      "com medo de",
+      "receio que",
+      "temo que",
+      "apavorado",
+      "apavorada",
+      "assustado",
+      "assustada",
+      "vulnerável",
+      "ameaçado",
+      "ameaçada",
+      "fragilizado",
+      "fragilizada",
+      "exposto",
+      "exposta",
+      "pavor",
+      "terror",
+      "não acredito",
+      "não confio",
+      "confiança",
     ],
-    questions: [
-      "O que você teme?",
+    questions: ["O que você teme?",
       "Por que isso amedronta?",
       "O que você faria se não tivesse medo?",
       "Essa emoção está informando ou está comandando?",
@@ -236,29 +950,47 @@ const TRIGGER_MAP = [
       "O que você se culpa por algo que, na verdade, não está sob o seu controle?",
       "Que prova você já tem de que pode confiar em si mesmo — e por que ignora?",
       "O que você faria se acreditasse que é digno de amor incondicional?",
-      "O que você faria agora se não tivesse medo de errar de novo?",
-    ],
+      "O que você faria agora se não tivesse medo de errar de novo?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. — Autocrítica e autoestima
+  // S.A.S.E. + A.P.L. — autocrítica
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. + A.P.L. — autocrítica", method: "S.A.S.E.",
     patterns: [
-      "ninguém gosta de mim", "ninguém me entende", "ninguém me vê",
-      "não sou suficiente", "não sou capaz", "não mereço",
-      "sou inferior", "sou um fracasso", "nunca vou conseguir",
-      "todo mundo é melhor", "sempre fui assim", "nunca vou mudar",
-      "sou burro", "sou burra", "sou incompetente", "não presto",
-      "me odeio", "sou horrível", "sou péssimo", "sou péssima",
-      "ninguém me respeita", "não me valorizam", "sou invisível",
-      "incompetência", "incompetente",
-      "críticas", "crítico", "criticado", "criticada", "criticar",
+      "ninguém gosta de mim",
+      "ninguém me entende",
+      "ninguém me vê",
+      "não sou suficiente",
+      "não sou capaz",
+      "não mereço",
+      "sou inferior",
+      "sou um fracasso",
+      "nunca vou conseguir",
+      "todo mundo é melhor",
+      "sempre fui assim",
+      "nunca vou mudar",
+      "sou burro",
+      "sou burra",
+      "sou incompetente",
+      "não presto",
+      "me odeio",
+      "sou horrível",
+      "sou péssimo",
+      "sou péssima",
+      "ninguém me respeita",
+      "não me valorizam",
+      "sou invisível",
+      "incompetência",
+      "incompetente",
+      "críticas",
+      "crítico",
+      "criticado",
+      "criticada",
+      "criticar",
       "não sou",
     ],
-    questions: [
-      "Esse pensamento é sobre você ou sobre o que você aprendeu a acreditar?",
+    questions: ["Esse pensamento é sobre você ou sobre o que você aprendeu a acreditar?",
       "Se isso fosse sobre outra pessoa, qual seria o seu conselho?",
       "O que você já sabe, mas ainda não aceitou?",
       "Que crença está por trás desse pensamento?",
@@ -272,26 +1004,32 @@ const TRIGGER_MAP = [
       "O que você precisa provar para si mesmo para se sentir suficiente? E isso é alcançável?",
       "Que história você conta sobre si mesmo que já não serve mais?",
       "O que mudaria se você não precisasse da aprovação de ninguém para se sentir suficiente?",
-      "Que verdade sobre você mesmo você não quer que ninguém descubra?",
-    ],
+      "Que verdade sobre você mesmo você não quer que ninguém descubra?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. — Perfeccionismo e autopressão
+  // S.A.S.E. + A.P.L. — perfeccionismo
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. + A.P.L. — perfeccionismo", method: "S.A.S.E.",
     patterns: [
-      "precisa ser perfeito", "não pode ter erro", "tem que ser impecável",
-      "não posso errar", "não posso falhar", "muito exigente",
-      "perfeição", "perfeccionismo", "não tem margem para erro",
-      "só lanço quando estiver pronto", "precisa estar impecável",
-      "tenho padrão muito alto", "não consigo entregar pela metade",
-      "competência", "competente",
+      "precisa ser perfeito",
+      "não pode ter erro",
+      "tem que ser impecável",
+      "não posso errar",
+      "não posso falhar",
+      "muito exigente",
+      "perfeição",
+      "perfeccionismo",
+      "não tem margem para erro",
+      "só lanço quando estiver pronto",
+      "precisa estar impecável",
+      "tenho padrão muito alto",
+      "não consigo entregar pela metade",
+      "competência",
+      "competente",
       "quando estiver",
     ],
-    questions: [
-      "Quem exige perfeição — você ou o problema?",
+    questions: ["Quem exige perfeição — você ou o problema?",
       "O que é 'bom o suficiente' aqui?",
       "Se você entregasse isso imperfeito, o pior que pode acontecer é…?",
       "O indicador de maturidade é agir sem necessidade de certeza absoluta. O que impede isso agora?",
@@ -301,23 +1039,29 @@ const TRIGGER_MAP = [
       "Você sente que o bloqueio surge do medo de que o resultado final não seja 'perfeito' ou da dificuldade de simplesmente começar?",
       "E se você conseguir, o que aconteceria de desconfortável?",
       "De que forma você está boicotando o próprio avanço?",
-      "Que obrigação você teria se fosse bem-sucedido nisso?",
-    ],
+      "Que obrigação você teria se fosse bem-sucedido nisso?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // S.A.S.E. — Intensidade, intromissão e invisibilidade
+  // S.A.S.E. — intensidade
   // ─────────────────────────────────────────────────────────
   {
     layer: "S.A.S.E. — intensidade", method: "S.A.S.E.",
     patterns: [
-      "intenso", "intensidade", "sou intenso", "sou intensa",
-      "invisível", "invisibilidade", "me sinto invisível", "ninguém me nota",
-      "intromissão", "intromissivo", "me intrometer",
-      "exagero", "exagerado", "estou exagerando", "reajo demais",
+      "intenso",
+      "intensidade",
+      "sou intenso",
+      "sou intensa",
+      "invisível",
+      "invisibilidade",
+      "me sinto invisível",
+      "ninguém me nota",
+      "me intrometer",
+      "exagero",
+      "exagerado",
+      "estou exagerando",
+      "reajo demais",
     ],
-    questions: [
-      "Você percebe se a sua intensidade é uma forma de aproveitar a vida ao máximo ou surge de uma urgência em preencher vazios?",
+    questions: ["Você percebe se a sua intensidade é uma forma de aproveitar a vida ao máximo ou surge de uma urgência em preencher vazios?",
       "Você sente que a sua entrega total é bem recebida, ou acaba se frustrando quando os outros não correspondem na mesma voltagem?",
       "Você consegue identificar em quais momentos a sua intensidade te impulsiona e em quais ela gera exaustão?",
       "Você sente que a sua percepção de invisibilidade surge da falta de reconhecimento externo ou de uma dificuldade interna em validar o seu próprio valor?",
@@ -325,45 +1069,96 @@ const TRIGGER_MAP = [
       "Em que momentos da sua história você aprendeu que precisava ser 'extraordinário' para não se sentir invisível?",
       "Você percebe se costuma transformar um problema pequeno em uma catástrofe total antes mesmo de tentar resolvê-lo?",
       "O que você ganha ao intensificar uma narrativa — é uma forma de garantir que as pessoas te ouçam?",
-      "Que parte de você morreria se você parasse de se preocupar?",
-    ],
+      "Que parte de você morreria se você parasse de se preocupar?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA ETAPA 1 — Observação e mapeamento
+  // MIDESA — observação
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — observação", method: "MIDESA",
     patterns: [
-      "preciso agir", "vou logo", "é urgente", "não posso esperar",
-      "tenho que resolver agora", "a situação exige", "preciso decidir já",
-      "estratégia", "estratégico", "estratégica", "melhor estratégia",
-      "qual a melhor", "qual seria a melhor", "como devo agir",
-      "plano de ação", "próximo passo", "caminho certo",
-      "decisão estratégica", "abordagem", "tática", "planejamento",
-      "como resolver", "o que fazer", "por onde começar",
-      "muita coisa ao mesmo tempo", "sobrecarga de informação",
-      "não consigo priorizar", "tudo parece urgente",
-      "não vejo saída", "como sair dessa", "preciso de uma solução",
-      "qual é o caminho", "como avançar", "quero crescer",
-      "quero melhorar", "quero mudar", "quero progredir",
-      "meta", "objetivo", "resultado esperado",
-      "resultado", "problema", "difícil",
+      "preciso agir",
+      "vou logo",
+      "é urgente",
+      "não posso esperar",
+      "tenho que resolver agora",
+      "a situação exige",
+      "preciso decidir já",
+      "estratégia",
+      "estratégico",
+      "estratégica",
+      "melhor estratégia",
+      "qual a melhor",
+      "qual seria a melhor",
+      "como devo agir",
+      "plano de ação",
+      "próximo passo",
+      "caminho certo",
+      "decisão estratégica",
+      "abordagem",
+      "tática",
+      "planejamento",
+      "como resolver",
+      "o que fazer",
+      "por onde começar",
+      "muita coisa ao mesmo tempo",
+      "sobrecarga de informação",
+      "não consigo priorizar",
+      "tudo parece urgente",
+      "não vejo saída",
+      "como sair dessa",
+      "preciso de uma solução",
+      "qual é o caminho",
+      "como avançar",
+      "quero crescer",
+      "quero melhorar",
+      "quero mudar",
+      "quero progredir",
+      "meta",
+      "objetivo",
+      "resultado esperado",
+      "resultado",
+      "problema",
+      "difícil",
       "propósito",
-      "trabalho", "no trabalho", "meu trabalho", "ambiente de trabalho",
-      "ruminação", "ruminando", "pensar demais", "ficar pensando", "remoendo",
-      "aprender", "estudar", "recomeçar", "começar de novo",
-      "outra chance", "mereço mais", "não reconhecem",
-      "estou estagnado", "situação difícil", "está difícil",
-      "depois eu faço", "deixo pra depois",
-      "plano b", "alternativa", "outra opção",
-      "consequências", "consequência", "efeito colateral",
-      "priorizar", "prioridade", "urgente vs importante",
-      "importante", "urgência", "prazo", "deadline", "apertado",
+      "trabalho",
+      "no trabalho",
+      "meu trabalho",
+      "ambiente de trabalho",
+      "ruminação",
+      "ruminando",
+      "pensar demais",
+      "ficar pensando",
+      "remoendo",
+      "aprender",
+      "estudar",
+      "recomeçar",
+      "começar de novo",
+      "outra chance",
+      "mereço mais",
+      "não reconhecem",
+      "estou estagnado",
+      "situação difícil",
+      "está difícil",
+      "depois eu faço",
+      "deixo pra depois",
+      "plano b",
+      "alternativa",
+      "outra opção",
+      "consequências",
+      "consequência",
+      "efeito colateral",
+      "priorizar",
+      "prioridade",
+      "urgente vs importante",
+      "importante",
+      "urgência",
+      "prazo",
+      "deadline",
+      "apertado",
       "preciso saber mas não quero",
     ],
-    questions: [
-      "Você mapeou o campo antes de agir ou está reagindo ao que apareceu?",
+    questions: ["Você mapeou o campo antes de agir ou está reagindo ao que apareceu?",
       "O que você ainda não sabe sobre essa situação e precisaria saber?",
       "Quais são os padrões que se repetem aqui — e o que eles indicam?",
       "Você está vendo o que realmente importa ou o que aparece com mais força?",
@@ -381,27 +1176,36 @@ const TRIGGER_MAP = [
       "O que você está adiando aprender porque seria doloroso?",
       "O que você faria com o tempo que gasta ruminando?",
       "O que você precisa parar de fazer para ter energia para o essencial?",
-      "Que momento de hoje merece sua atenção plena e não está recebendo?",
-    ],
+      "Que momento de hoje merece sua atenção plena e não está recebendo?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA ETAPA 2 — Separação do eu do objeto
+  // MIDESA — separação do eu
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — separação do eu", method: "MIDESA",
     patterns: [
-      "isso é sobre mim", "foi contra mim", "fizeram isso comigo",
-      "me prejudicaram", "minha reputação", "minha imagem",
-      "é um ataque", "estão me sabotando", "não me respeitam",
-      "me ignoraram", "fui excluído", "fui excluída",
-      "foi de propósito", "querem me prejudicar",
-      "não reconhecem meu trabalho", "estão me desvalorizando",
-      "me usaram", "fui usado", "fui usada",
+      "isso é sobre mim",
+      "foi contra mim",
+      "fizeram isso comigo",
+      "me prejudicaram",
+      "minha reputação",
+      "minha imagem",
+      "é um ataque",
+      "estão me sabotando",
+      "não me respeitam",
+      "me ignoraram",
+      "fui excluído",
+      "fui excluída",
+      "foi de propósito",
+      "querem me prejudicar",
+      "não reconhecem meu trabalho",
+      "estão me desvalorizando",
+      "me usaram",
+      "fui usado",
+      "fui usada",
       "passividade",
     ],
-    questions: [
-      "Se essa decisão fosse sobre outra pessoa, você analisaria da mesma forma?",
+    questions: ["Se essa decisão fosse sobre outra pessoa, você analisaria da mesma forma?",
       "O que você está trazendo de pessoal para uma análise que deveria ser objetiva?",
       "Quais impulsos estão interferindo no seu julgamento agora?",
       "Você está decidindo ou está reagindo?",
@@ -410,27 +1214,39 @@ const TRIGGER_MAP = [
       "Você percebe se a sua vontade de estar presente nasce de conexão genuína ou de ansiedade em controlar os resultados?",
       "Você consegue identificar os sinais sutis de que a outra pessoa precisa de espaço?",
       "O que o silêncio do outro está dizendo, e o que você está projetando?",
-      "Quando você se sente ignorado, você tende a avançar sobre o limite do outro para reafirmar sua importância?",
-    ],
+      "Quando você se sente ignorado, você tende a avançar sobre o limite do outro para reafirmar sua importância?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA ETAPA 3 — Formulação de hipóteses
+  // MIDESA — hipóteses
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — hipóteses", method: "MIDESA",
     patterns: [
-      "com certeza", "obviamente", "claramente", "não há dúvida",
-      "a única forma", "só pode ser", "é óbvio que", "todo mundo sabe",
-      "é evidente", "não tem outra explicação", "só existe um caminho",
-      "tenho certeza que", "está provado que",
-      "é assim e ponto", "não tem como ser diferente",
-      "todo mundo concorda", "é unanimidade", "sem dúvida nenhuma",
-      "melhor que", "melhor do que", "pior",
-      "comparar", "comparação",
+      "com certeza",
+      "obviamente",
+      "claramente",
+      "não há dúvida",
+      "a única forma",
+      "só pode ser",
+      "é óbvio que",
+      "todo mundo sabe",
+      "é evidente",
+      "não tem outra explicação",
+      "só existe um caminho",
+      "tenho certeza que",
+      "está provado que",
+      "é assim e ponto",
+      "não tem como ser diferente",
+      "todo mundo concorda",
+      "é unanimidade",
+      "sem dúvida nenhuma",
+      "melhor que",
+      "melhor do que",
+      "pior",
+      "comparar",
+      "comparação",
     ],
-    questions: [
-      "Você desenvolveu mais de um cenário ou está seguindo a primeira hipótese?",
+    questions: ["Você desenvolveu mais de um cenário ou está seguindo a primeira hipótese?",
       "Que outra explicação é possível para o que está acontecendo?",
       "Qual é o cenário que você está evitando considerar?",
       "Se a sua hipótese principal estiver errada, o que muda?",
@@ -441,58 +1257,72 @@ const TRIGGER_MAP = [
       "Qual é a evidência real que você tem de que esse pensamento negativo é 100% verdadeiro?",
       "Com quem você está se comparando agora e por quê?",
       "O que a conquista do outro está despertando em você?",
-      "Se você não pudesse se comparar a ninguém, como saberia que é bom?",
-      "O que você inveja em alguém que poderia desenvolver em si?",
-    ],
+      "Se você não pudesse se comparar a ninguém, como saberia que é bom?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA ETAPA 4 — Teste racional
+  // MIDESA — teste racional
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — teste racional", method: "MIDESA",
     patterns: [
-      "não tem como dar errado", "tenho certeza que vai dar certo",
-      "não preciso pensar mais", "confio no meu instinto",
-      "meu feeling diz que", "já fiz isso antes", "não preciso testar",
-      "tenho experiência", "sei como funciona",
-      "não preciso validar", "vou direto pra ação",
-      "é intuitivo", "meu faro nunca falhou",
+      "não tem como dar errado",
+      "tenho certeza que vai dar certo",
+      "não preciso pensar mais",
+      "confio no meu instinto",
+      "meu feeling diz que",
+      "já fiz isso antes",
+      "não preciso testar",
+      "tenho experiência",
+      "sei como funciona",
+      "não preciso validar",
+      "vou direto pra ação",
+      "é intuitivo",
+      "meu faro nunca falhou",
     ],
-    questions: [
-      "O que acontece se isso der errado? Você simulou esse cenário?",
+    questions: ["O que acontece se isso der errado? Você simulou esse cenário?",
       "Que evidência seria suficiente para você mudar de ideia?",
       "Você está validando antes de executar ou executando para validar?",
       "O que os dados estão dizendo que a narrativa está escondendo?",
       "Se isso der errado, dá para desfazer?",
       "Qual é o seu plano B caso a abordagem atual não funcione nos próximos 30 dias?",
       "Se você pudesse falhar publicamente sem vergonha, o que tentaria?",
-      "O que você já sabe que é suficiente para decidir, mas ainda não aceita?",
-    ],
+      "O que você já sabe que é suficiente para decidir, mas ainda não aceita?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA ETAPA 5 — Decisão e execução consciente
+  // MIDESA — decisão consciente
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — decisão consciente", method: "MIDESA",
     patterns: [
-      "não sei o que fazer", "estou travado", "estou travada",
-      "travada", "travado",
-      "não consigo decidir", "fico em dúvida", "toda hora mudo de ideia",
-      "não sei por onde começar", "estou paralisado", "estou paralisada",
-      "como decidir", "como escolher", "qual caminho",
-      "vou deixar para depois", "mais tarde", "quando tiver tempo",
-      "ainda não é hora", "preciso esperar",
-      "não estou pronto", "não estou pronta",
-      "e se eu errar a escolha", "não consigo me comprometer",
+      "não sei o que fazer",
+      "estou travado",
+      "estou travada",
+      "travada",
+      "travado",
+      "não consigo decidir",
+      "fico em dúvida",
+      "toda hora mudo de ideia",
+      "não sei por onde começar",
+      "estou paralisado",
+      "estou paralisada",
+      "como decidir",
+      "como escolher",
+      "qual caminho",
+      "vou deixar para depois",
+      "mais tarde",
+      "quando tiver tempo",
+      "ainda não é hora",
+      "preciso esperar",
+      "não estou pronto",
+      "não estou pronta",
+      "e se eu errar a escolha",
+      "não consigo me comprometer",
       "depois eu",
       "não sei",
       "não entendo",
       "não gosto",
     ],
-    questions: [
-      "Essa ação vem de critério objetivo ou de pressão emocional?",
+    questions: ["Essa ação vem de critério objetivo ou de pressão emocional?",
       "O que você está esperando para decidir — mais dados ou mais coragem?",
       "Qual é o menor passo que você pode dar agora e avaliar o resultado?",
       "Se você só pudesse fazer uma coisa, qual seria?",
@@ -504,27 +1334,33 @@ const TRIGGER_MAP = [
       "O que você faria se todos os caminhos tivessem o mesmo risco?",
       "O que você espera que mude sem você agir?",
       "O que você está esperando que os outros resolvam por você?",
-      "Que hábito seu esconde um medo que você não nomeia?",
-    ],
+      "Que hábito seu esconde um medo que você não nomeia?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA ETAPA 6 — Avaliação e ajuste
+  // MIDESA — ajuste
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — ajuste", method: "MIDESA",
     patterns: [
-      "já decidi e não vou mudar", "não vou recuar", "é assim que tem que ser",
-      "investi demais para parar", "não posso admitir que errei",
-      "não vou dar o braço a torcer", "não mudo de ideia",
-      "segui o plano e não funcionou", "tentei e não deu certo",
-      "os resultados não vieram", "não está funcionando",
-      "preciso revisar minha estratégia", "não estou evoluindo",
-      "estagnado", "estagnada", "estou rodando em círculos",
+      "já decidi e não vou mudar",
+      "não vou recuar",
+      "é assim que tem que ser",
+      "investi demais para parar",
+      "não posso admitir que errei",
+      "não vou dar o braço a torcer",
+      "não mudo de ideia",
+      "segui o plano e não funcionou",
+      "tentei e não deu certo",
+      "os resultados não vieram",
+      "não está funcionando",
+      "preciso revisar minha estratégia",
+      "não estou evoluindo",
+      "estagnado",
+      "estagnada",
+      "estou rodando em círculos",
       "os mesmos erros se repetem",
     ],
-    questions: [
-      "O que os resultados estão dizendo que você ainda não está disposto a ouvir?",
+    questions: ["O que os resultados estão dizendo que você ainda não está disposto a ouvir?",
       "Você está ajustando a rota ou defendendo o plano original a qualquer custo?",
       "O que esse ciclo está ensinando que você ainda não incorporou?",
       "Que falha de julgamento se repetiu aqui — e como você atualiza o modelo?",
@@ -536,29 +1372,46 @@ const TRIGGER_MAP = [
       "Você sente que esse ciclo de pensamentos repetitivos te ajuda a encontrar uma solução real?",
       "Que parte dessa falha foi informação nova, não fracasso?",
       "O que você faria com o tempo que gasta ruminando?",
-      "O que você já sabe que é suficiente para decidir, mas ainda não aceita?",
-    ],
+      "O que você já sabe que é suficiente para decidir, mas ainda não aceita?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // MIDESA — Autonomia e validação externa
+  // MIDESA — autonomia
   // ─────────────────────────────────────────────────────────
   {
     layer: "MIDESA — autonomia", method: "MIDESA",
     patterns: [
-      "me diga o que fazer", "qual a resposta certa", "o que eu devo fazer",
-      "me ajuda a decidir", "o que é certo", "confirma para mim",
-      "preciso de uma opinião", "elogio", "reconhecimento", "aprovação",
-      "me deixar feliz", "o que alguém poderia", "por que a opinião alheia",
-      "preciso de validação", "quero saber se estou certo",
-      "li que", "ouvi que", "disseram que", "todo mundo diz",
-      "os especialistas dizem", "de acordo com", "a ciência diz",
-      "estudos mostram", "pesquisas indicam", "é o que se recomenda",
-      "todos fazem assim", "o mercado diz", "a tendência é",
-      "o que os outros fazem", "o que eu deveria",
+      "me diga o que fazer",
+      "qual a resposta certa",
+      "o que eu devo fazer",
+      "me ajuda a decidir",
+      "o que é certo",
+      "confirma para mim",
+      "preciso de uma opinião",
+      "elogio",
+      "reconhecimento",
+      "aprovação",
+      "me deixar feliz",
+      "o que alguém poderia",
+      "por que a opinião alheia",
+      "preciso de validação",
+      "quero saber se estou certo",
+      "li que",
+      "ouvi que",
+      "disseram que",
+      "todo mundo diz",
+      "os especialistas dizem",
+      "de acordo com",
+      "a ciência diz",
+      "estudos mostram",
+      "pesquisas indicam",
+      "é o que se recomenda",
+      "todos fazem assim",
+      "o mercado diz",
+      "a tendência é",
+      "o que os outros fazem",
+      "o que eu deveria",
     ],
-    questions: [
-      "O espelho não decide. O que você já sabe e ainda não assumiu?",
+    questions: ["O espelho não decide. O que você já sabe e ainda não assumiu?",
       "Você está buscando uma resposta ou uma confirmação?",
       "O que mudaria se não houvesse ninguém para te dizer o que fazer?",
       "O problema está na vontade de se ver satisfeito ou de satisfazer?",
@@ -574,36 +1427,60 @@ const TRIGGER_MAP = [
       "O que você faria se ninguém soubesse o que você fez?",
       "Se você pudesse recomeçar agora, o que manteria do jeito que está?",
       "Quem define os seus critérios, você ou a opinião dos outros?",
-      "Que tipo de elogio alguém poderia expressar para fazê-lo pular de alegria?",
-    ],
+      "Que tipo de elogio alguém poderia expressar para fazê-lo pular de alegria?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // A.P.L. CAMADA 1 — Metacognição
+  // A.P.L. — metacognição
   // ─────────────────────────────────────────────────────────
   {
     layer: "A.P.L. — metacognição", method: "A.P.L.",
     patterns: [
-      "sempre foi assim", "nunca foi diferente", "é natural que",
-      "é normal", "é assim que funciona", "sempre soube que",
-      "nunca questionei", "aceitei que", "me ensinaram que",
-      "talvez", "acho que", "não sei se", "será que",
-      "me parece", "parece que", "provavelmente", "possivelmente",
-      "estou sendo muito exigente", "estou exagerando",
-      "será que estou", "estou errado", "estou errada",
-      "sempre pensei que", "aprendi a acreditar",
-      "automaticamente faço", "instintivamente",
-      "reajo sempre assim", "meu padrão de comportamento",
-      "insegura", "inseguro",
+      "sempre foi assim",
+      "nunca foi diferente",
+      "é natural que",
+      "é normal",
+      "é assim que funciona",
+      "sempre soube que",
+      "nunca questionei",
+      "aceitei que",
+      "me ensinaram que",
+      "talvez",
+      "acho que",
+      "não sei se",
+      "será que",
+      "me parece",
+      "parece que",
+      "provavelmente",
+      "possivelmente",
+      "estou sendo muito exigente",
+      "estou exagerando",
+      "será que estou",
+      "estou errado",
+      "estou errada",
+      "sempre pensei que",
+      "aprendi a acreditar",
+      "automaticamente faço",
+      "instintivamente",
+      "reajo sempre assim",
+      "meu padrão de comportamento",
+      "insegura",
+      "inseguro",
       "não consigo",
       "não dependo",
-      "não dependo de ninguém", "dependo de",
-      "viés", "preconceito", "suposição",
-      "evidência", "evidências", "prova", "dado concreto",
-      "aprender com erro", "feedback", "crítica construtiva",
+      "não dependo de ninguém",
+      "dependo de",
+      "viés",
+      "preconceito",
+      "suposição",
+      "evidência",
+      "evidências",
+      "prova",
+      "dado concreto",
+      "aprender com erro",
+      "feedback",
+      "crítica construtiva",
     ],
-    questions: [
-      "O que você está assumindo sem ter verificado?",
+    questions: ["O que você está assumindo sem ter verificado?",
       "Que crença está por trás desse pensamento?",
       "Você está pensando sobre o problema ou a partir do problema?",
       "O que você recusaria ouvir sobre isso — e por quê?",
@@ -619,29 +1496,45 @@ const TRIGGER_MAP = [
       "Se você tivesse a certeza absoluta de que não seria julgado, o que faria de diferente hoje?",
       "Que pergunta você nunca fez a si mesmo com medo da resposta?",
       "Que hábito seu esconde um medo que você não nomeia?",
-      "O que você está defendendo com tanta força que já nem lembra o motivo?",
-    ],
+      "O que você está defendendo com tanta força que já nem lembra o motivo?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // A.P.L. CAMADA 2 — Análise e decomposição
+  // A.P.L. — análise
   // ─────────────────────────────────────────────────────────
   {
     layer: "A.P.L. — análise", method: "A.P.L.",
     patterns: [
-      "o problema é", "o problema está", "a causa disso é",
-      "isso acontece porque", "é culpa", "a culpa é",
-      "foi por causa de", "resultou em", "foi consequência",
-      "análise", "analisar", "avaliar", "examinar",
-      "vou enviar", "vou mandar essa mensagem", "vou postar",
-      "pode ser mal interpretado", "como dizer isso",
-      "os dados mostram", "a evidência", "está comprovado",
-      "verdade", "honestamente", "o que não falo",
-      "quero entender", "preciso compreender", "não faz sentido",
-      "como isso funciona", "por que isso acontece",
+      "o problema é",
+      "o problema está",
+      "a causa disso é",
+      "isso acontece porque",
+      "é culpa",
+      "a culpa é",
+      "foi por causa de",
+      "resultou em",
+      "foi consequência",
+      "análise",
+      "analisar",
+      "avaliar",
+      "examinar",
+      "vou enviar",
+      "vou mandar essa mensagem",
+      "vou postar",
+      "pode ser mal interpretado",
+      "como dizer isso",
+      "os dados mostram",
+      "a evidência",
+      "está comprovado",
+      "verdade",
+      "honestamente",
+      "o que não falo",
+      "quero entender",
+      "preciso compreender",
+      "não faz sentido",
+      "como isso funciona",
+      "por que isso acontece",
     ],
-    questions: [
-      "O que é fato aqui? O que é narrativa?",
+    questions: ["O que é fato aqui? O que é narrativa?",
       "Se você separasse o que aconteceu do que interpretou, o que sobra?",
       "Qual é a premissa que, se estiver errada, muda tudo?",
       "Você está separando correlação de causalidade?",
@@ -651,26 +1544,37 @@ const TRIGGER_MAP = [
       "Você está focado em aliviar o sintoma ou em tratar a causa raiz do problema?",
       "Você consegue identificar qual é o gatilho emocional que faz sua mente travar em um pensamento específico?",
       "Você percebe se gasta mais tempo analisando o passado do que planejando o presente?",
-      "O que você está adiando aprender porque seria doloroso?",
-    ],
+      "O que você está adiando aprender porque seria doloroso?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // A.P.L. CAMADA 3 — Crítica e antidogmatismo
+  // A.P.L. — crítica
   // ─────────────────────────────────────────────────────────
   {
     layer: "A.P.L. — crítica", method: "A.P.L.",
     patterns: [
-      "tenho certeza", "estou convicto", "estou convicta",
-      "não tenho dúvida", "é definitivo", "não há como questionar",
-      "está claro para mim", "já analisei tudo", "está resolvido",
-      "portanto", "logo", "em conclusão", "fica claro que",
-      "isso confirma que", "a conclusão é", "está provado",
-      "não preciso rever", "é incontestável",
-      "ceticismo", "cético", "cética",
+      "tenho certeza",
+      "estou convicto",
+      "estou convicta",
+      "não tenho dúvida",
+      "é definitivo",
+      "não há como questionar",
+      "está claro para mim",
+      "já analisei tudo",
+      "está resolvido",
+      "portanto",
+      "logo",
+      "em conclusão",
+      "fica claro que",
+      "isso confirma que",
+      "a conclusão é",
+      "está provado",
+      "não preciso rever",
+      "é incontestável",
+      "ceticismo",
+      "cético",
+      "cética",
     ],
-    questions: [
-      "Em que cenário esse pensamento estaria completamente errado?",
+    questions: ["Em que cenário esse pensamento estaria completamente errado?",
       "Você está defendendo uma ideia ou investigando uma?",
       "O que precisaria acontecer para essa conclusão falhar?",
       "Que contraexemplo você está ignorando?",
@@ -683,29 +1587,41 @@ const TRIGGER_MAP = [
       "Até que ponto o seu ceticismo ajuda nas decisões e em que momento se torna uma barreira que gera isolamento?",
       "O que você está defendendo com tanta força que já nem lembra o motivo?",
       "Se você não pudesse usar a palavra 'mas' por um dia, o que mudaria?",
-      "O que você perde ao sempre tentar estar certo?",
-    ],
+      "O que você perde ao sempre tentar estar certo?",],
   },
-
   // ─────────────────────────────────────────────────────────
-  // A.P.L. CAMADA 4 — Integração e aprendizado
+  // A.P.L. — integração
   // ─────────────────────────────────────────────────────────
   {
     layer: "A.P.L. — integração", method: "A.P.L.",
     patterns: [
-      "errei mas", "falhei mas", "não foi minha culpa",
-      "se tivesse", "se eu soubesse antes", "ninguém me avisou",
-      "não tinha como saber", "foi azar", "foi o contexto",
-      "não fui compreendido", "não fui compreendida",
-      "aprendi com isso", "o que aprendi", "lição",
-      "o que posso melhorar", "o que preciso ajustar",
-      "repetindo os mesmos erros", "padrão que se repete",
-      "não evoluo", "estou estagnado no mesmo nível",
-      "bloqueio criativo", "não consigo criar", "não consigo escrever",
-      "não tenho ideias", "trava criativa",
+      "errei mas",
+      "falhei mas",
+      "não foi minha culpa",
+      "se tivesse",
+      "se eu soubesse antes",
+      "ninguém me avisou",
+      "não tinha como saber",
+      "foi azar",
+      "foi o contexto",
+      "não fui compreendido",
+      "não fui compreendida",
+      "aprendi com isso",
+      "o que aprendi",
+      "lição",
+      "o que posso melhorar",
+      "o que preciso ajustar",
+      "repetindo os mesmos erros",
+      "padrão que se repete",
+      "não evoluo",
+      "estou estagnado no mesmo nível",
+      "bloqueio criativo",
+      "não consigo criar",
+      "não consigo escrever",
+      "não tenho ideias",
+      "trava criativa",
     ],
-    questions: [
-      "O que esse momento está ensinando que você ainda não quer aprender?",
+    questions: ["O que esse momento está ensinando que você ainda não quer aprender?",
       "Se você revisitasse essa situação daqui a um ano, o que veria diferente?",
       "O que você já sabe, mas ainda não aceitou?",
       "Que modelo mental precisaria ser atualizado aqui?",
@@ -718,11 +1634,11 @@ const TRIGGER_MAP = [
       "O que você faria se pudesse recomeçar sem o peso do que já foi?",
       "O que você ainda pode recuperar que considera perdido?",
       "Se você pudesse recomeçar agora, o que manteria do jeito que está?",
-      "Quais lições essa experiência está ocultando?",
-    ],
+      "Quais lições essa experiência está ocultando?",],
   },
 
 ];
+
 // ══════════════════════════════════════════════════════════════
 // FRAMEWORK INFO — cor lavanda para S.A.S.E. (Lin X)
 // ══════════════════════════════════════════════════════════════
@@ -1219,14 +2135,21 @@ function IHIAApp() {
   const [answerText, setAnswerText]     = useState("");
   const [confirmClear, setConfirmClear] = useState(false);
   const [showAbout, setShowAbout]       = useState(false);
+  const [activeContext, setActiveContext] = useState(null);
 
   const timer          = useRef(null);
   const taRef          = useRef(null);
+  const textRef        = useRef("");   // ref para captura de contexto sem stale closure
   // CORREÇÃO 1: questionOffset inicializado com loadOffsets()
   const questionOffset = useRef(loadOffsets());
 
   // Persiste diário sempre que muda
   useEffect(() => { saveDiary(diary); }, [diary]);
+
+  // Cleanup: cancela timer pendente ao desmontar o componente
+  useEffect(() => {
+    return () => { clearTimeout(timer.current); };
+  }, []);
 
   // CORREÇÃO 1: salva offsets usando função, não dependência de ref
   // Refs não disparam re-renders — salvamos manualmente em showQuestions
@@ -1251,6 +2174,8 @@ function IHIAApp() {
     if (currentQuestions.length === 0) return;
     const i = (idx !== undefined) ? idx : selectedIdx;
     const chosen = currentQuestions[i] || currentQuestions[0];
+    // Usa ref para capturar texto no momento exato da detecção, sem stale closure
+    const rawText = textRef.current.trim();
     const entry = {
       id: Date.now(),
       question: chosen,
@@ -1260,6 +2185,7 @@ function IHIAApp() {
       time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
       answer: "",
       answered: false,
+      ...(rawText.length > 0 && { context: rawText.slice(0, 1500) }),
     };
     setDiary(prev => [entry, ...prev]);
     setOpen(false);
@@ -1270,6 +2196,7 @@ function IHIAApp() {
   const handleChange = useCallback((e) => {
     const val = e.target.value;
     setText(val);
+    textRef.current = val;   // mantém ref sincronizada para captura sem stale closure
     setOpen(false);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => showQuestions(val), PAUSE_MS);
@@ -1512,10 +2439,48 @@ function IHIAApp() {
                       clique para responder →
                     </div>
                   )}
+                  {entry.context && (
+                    <div
+                      onClick={e => { e.stopPropagation(); setActiveContext(entry.context); }}
+                      style={{ fontSize: "9px", color: "#444", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.08em", marginTop: "8px", cursor: "pointer", display: "inline-block" }}
+                      onMouseEnter={e => e.currentTarget.style.color = "#888"}
+                      onMouseLeave={e => e.currentTarget.style.color = "#444"}
+                    >
+                      ver contexto original →
+                    </div>
+                  )}
                 </div>
               );
             })
           )}
+        </div>
+      )}
+
+      {/* Modal de contexto original — independente do modal de resposta */}
+      {activeContext && (
+        <div
+          onClick={() => setActiveContext(null)}
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#000000cc", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", zIndex: 110 }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: "#0e0e0e", border: "1px solid #2a2a2a", borderRadius: "4px", padding: "28px", width: "100%", maxWidth: "600px", maxHeight: "80vh", display: "flex", flexDirection: "column" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ fontSize: "9px", color: "#444", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                contexto original
+              </div>
+              <button
+                onClick={() => setActiveContext(null)}
+                style={{ background: "none", border: "none", color: "#333", fontFamily: "'Courier Prime', monospace", fontSize: "16px", cursor: "pointer", lineHeight: 1 }}
+              >×</button>
+            </div>
+            <div style={{ overflowY: "auto", flex: 1 }}>
+              <div style={{ fontSize: "13px", color: "#666", fontFamily: "'Courier Prime', monospace", lineHeight: "1.9", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                {activeContext}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1626,6 +2591,9 @@ function IHIAApp() {
                 <div>
                   ◆ Desenvolvido por Lin X · Baseado no livro <span style={{ fontStyle: "italic" }}>IA Profissional</span> · 2026
                 </div>
+                <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #141414", color: "#333", fontSize: "9px", letterSpacing: "0.1em" }}>
+                  Versão 1.0.0
+                </div>
               </div>
             </div>
           </div>
@@ -1637,7 +2605,6 @@ function IHIAApp() {
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(IHIAApp));
 
   </script>
-
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
