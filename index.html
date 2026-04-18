@@ -2185,8 +2185,10 @@ function IHIAApp() {
       time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
       answer: "",
       answered: false,
-      ...(rawText.length > 0 && { context: rawText.slice(0, 1500) }),
     };
+    if (rawText.length > 0) {
+      entry.context = rawText.slice(0, 1500);
+    }
     setDiary(prev => [entry, ...prev]);
     setOpen(false);
     setCurrentQuestions([]);
