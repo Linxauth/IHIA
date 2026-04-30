@@ -18,11 +18,18 @@
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Courier+Prime&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { background: #0a0a0a; min-height: 100%; }
     body { -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
     #root { min-height: 100vh; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -1646,17 +1653,17 @@ const FRAMEWORK_INFO = {
   "S.A.S.E.": {
     name: "S.A.S.E. — Sabedoria Aplicada Sob Emoção",
     principle: "Reconheça a emoção que interfere. Separe fato de desejo antes de agir.",
-    color: "#9b8ec2",
+    color: "#b8a4f0",
   },
   "MIDESA": {
     name: "MIDESA — Modelo Integrado de Decisão Estratégica Avançada",
     principle: "Observe o campo. Separe o eu da análise. Valide antes de executar.",
-    color: "#6a7a9a",
+    color: "#5b9cf6",
   },
   "A.P.L.": {
     name: "A.P.L. — Arquitetura do Pensar Lúcido",
     principle: "Disciplinar o pensar, não automatizá-lo. Lucidez é aceitar revisão permanente.",
-    color: "#8a7a6a",
+    color: "#e8a830",
   },
 };
 
@@ -1730,7 +1737,7 @@ function RespiraGuiada() {
   }, [segundos, fase]);
 
   const tamanho = 60 + progresso * 80;
-  const cor = "#9b8ec2";
+  const cor = "#b8a4f0";
 
   return (
     <div style={{ textAlign: "center", marginTop: "24px" }}>
@@ -1881,10 +1888,10 @@ function Tratak() {
               <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#664422", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "8px" }}>
                 fixe o olhar na chama
               </div>
-              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "26px", color: segundos <= 10 ? "#cc5500" : "#553322", letterSpacing: "0.04em" }}>
+              <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "26px", color: segundos <= 10 ? "#cc5500" : "#553322", letterSpacing: "0.04em" }}>
                 {segundos}
               </div>
-              <button onClick={reiniciar} style={{ background: "none", border: "none", color: "#555", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", marginTop: "6px", letterSpacing: "0.08em" }}>
+              <button onClick={reiniciar} style={{ background: "none", border: "none", color: "#707070", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", marginTop: "6px", letterSpacing: "0.08em" }}>
                 cancelar
               </button>
             </div>
@@ -1917,7 +1924,7 @@ const ANCORA_SENTIDOS = [
   { num: 2, sentido: "OLFATO",   instrucao: "Identifique dois cheiros que consegue sentir.",                   tempo: 10000 },
   { num: 1, sentido: "PALADAR",  instrucao: "Perceba um gosto na boca.",                                       tempo:  5000 },
 ];
-const ANCORA_COR = "#6a7a9a";
+const ANCORA_COR = "#5b9cf6";
 
 function AncoraMIDESA() {
   const [ativo, setAtivo] = useState(false);
@@ -2029,7 +2036,7 @@ function AncoraMIDESA() {
             ))}
           </div>
 
-          <button onClick={reiniciar} style={{ background: "none", border: "none", color: "#555", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", letterSpacing: "0.08em" }}>
+          <button onClick={reiniciar} style={{ background: "none", border: "none", color: "#707070", fontFamily: "'Courier Prime', monospace", fontSize: "9px", cursor: "pointer", letterSpacing: "0.08em" }}>
             parar
           </button>
         </div>
@@ -2041,7 +2048,7 @@ function AncoraMIDESA() {
 // ══════════════════════════════════════════════════════════════
 // PERSISTÊNCIA
 // ══════════════════════════════════════════════════════════════
-const STORAGE_KEYS = { DIARY: "ihia_diary", OFFSETS: "ihia_question_offsets" };
+const STORAGE_KEYS = { DIARY: "ihia_diary", OFFSETS: "ihia_question_offsets", DRAFT: "ihia_draft" };
 
 function loadDiary() {
   try { const s = localStorage.getItem(STORAGE_KEYS.DIARY); return s ? JSON.parse(s) : []; }
@@ -2051,13 +2058,19 @@ function saveDiary(diary) {
   try { localStorage.setItem(STORAGE_KEYS.DIARY, JSON.stringify(diary)); } catch {}
 }
 
-// CORREÇÃO 1: loadOffsets e saveOffsets definidos (estavam ausentes)
 function loadOffsets() {
   try { const s = localStorage.getItem(STORAGE_KEYS.OFFSETS); return s ? JSON.parse(s) : {}; }
   catch { return {}; }
 }
 function saveOffsets(offsets) {
   try { localStorage.setItem(STORAGE_KEYS.OFFSETS, JSON.stringify(offsets)); } catch {}
+}
+function loadDraft() {
+  try { return localStorage.getItem(STORAGE_KEYS.DRAFT) || ""; }
+  catch { return ""; }
+}
+function saveDraft(text) {
+  try { localStorage.setItem(STORAGE_KEYS.DRAFT, text); } catch {}
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2077,7 +2090,7 @@ function ScaleBar({ label, count, total, color }) {
     <div style={{ marginBottom: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
         <span style={{ fontSize: "10px", color, letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "'Courier Prime', monospace" }}>{label}</span>
-        <span style={{ fontSize: "10px", color: "#333", fontFamily: "'Courier Prime', monospace" }}>{count} pergunta{count !== 1 ? "s" : ""} · {note}</span>
+        <span style={{ fontSize: "10px", color: "#909090", fontFamily: "'Courier Prime', monospace" }}>{count} pergunta{count !== 1 ? "s" : ""} · {note}</span>
       </div>
       <div style={{ height: "2px", background: "#1a1a1a", borderRadius: "1px", overflow: "hidden" }}>
         <div style={{ height: "100%", width: pct + "%", background: color, borderRadius: "1px", transition: "width 1s cubic-bezier(.4,0,.2,1)" }} />
@@ -2109,7 +2122,7 @@ function FrameworkHeader({ method }) {
       <div style={{ fontSize: "9px", color: fw.color, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: "4px" }}>
         ◆ {fw.name}
       </div>
-      <div style={{ fontSize: "11px", color: "#333", fontStyle: "italic", lineHeight: "1.6" }}>
+      <div style={{ fontSize: "11px", color: "#b0b0b0", fontStyle: "italic", lineHeight: "1.6" }}>
         {fw.principle}
       </div>
     </div>
@@ -2123,7 +2136,7 @@ const PAUSE_MS = 2000;
 
 function IHIAApp() {
   const [view, setView]                 = useState("editor");
-  const [text, setText]                 = useState("");
+  const [text, setText]                 = useState(() => loadDraft());
   const [currentQuestions, setCurrentQuestions] = useState([]);
   const [currentMethod, setCurrentMethod]       = useState("");
   const [currentLayer, setCurrentLayer]         = useState("");
@@ -2136,6 +2149,8 @@ function IHIAApp() {
   const [confirmClear, setConfirmClear] = useState(false);
   const [showAbout, setShowAbout]       = useState(false);
   const [activeContext, setActiveContext] = useState(null);
+  const [showWelcome, setShowWelcome]   = useState(true);
+  const [toast, setToast]               = useState(false);
 
   const timer          = useRef(null);
   const taRef          = useRef(null);
@@ -2145,6 +2160,9 @@ function IHIAApp() {
 
   // Persiste diário sempre que muda
   useEffect(() => { saveDiary(diary); }, [diary]);
+
+  // Persiste rascunho sempre que muda
+  useEffect(() => { saveDraft(text); }, [text]);
 
   // Cleanup: cancela timer pendente ao desmontar o componente
   useEffect(() => {
@@ -2192,6 +2210,8 @@ function IHIAApp() {
     setDiary(prev => [entry, ...prev]);
     setOpen(false);
     setCurrentQuestions([]);
+    setToast(true);
+    setTimeout(() => setToast(false), 2200);
     setTimeout(() => taRef.current?.focus(), 20);
   }, [currentQuestions, selectedIdx, currentMethod, currentLayer]);
 
@@ -2239,72 +2259,79 @@ function IHIAApp() {
   const answered    = diary.filter(e => e.answered).length;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0a0a0a", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 20px", fontFamily: "'Georgia', serif" }}>
+    <div style={{ minHeight: "100vh", background: "#0a0a0a", display: "flex", flexDirection: "column", alignItems: "center", padding: "56px 20px 60px", fontFamily: "'Georgia', serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Courier+Prime&display=swap');
         .ta, .ta-answer {
-          width: 100%; background: #111; border: 1px solid #2a2a2a;
-          border-radius: 4px; color: #e8e8e8; caret-color: #c0c0c0;
+          width: 100%; background: #161616; border: 1px solid #c89200cc;
+          border-radius: 18px; color: #f5f5f5; caret-color: #eeeeee;
           font-family: 'Courier Prime', monospace; font-size: 15px; line-height: 1.9;
           padding: 24px; resize: none; outline: none; display: block;
           transition: border-color .3s;
+          box-shadow: 0 2px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-        .ta { min-height: 280px; }
+        .ta { min-height: 300px; }
         .ta-answer { min-height: 120px; }
-        .ta::placeholder, .ta-answer::placeholder { color: #555; }
+        .ta::placeholder, .ta-answer::placeholder { color: #707070; }
         .ta:focus, .ta-answer:focus { border-color: #444; }
         .tab-btn {
           background: none; border: none; border-bottom: 2px solid transparent;
-          color: #333; font-family: 'Courier Prime', monospace; font-size: 11px;
+          color: #808080; font-family: 'Courier Prime', monospace; font-size: 11px;
           letter-spacing: 0.12em; text-transform: uppercase;
           padding: 8px 16px; cursor: pointer; transition: all .2s;
         }
-        .tab-btn.on { color: #c8c8c8; border-bottom-color: #444; }
-        .tab-btn:hover:not(.on) { color: #666; }
+        .tab-btn.on { color: #d0d0d0; border-bottom-color: #707070; }
+        .tab-btn:hover:not(.on) { color: #c8c8c8; }
         .q-panel {
-          background: #111; border-left: 3px solid #2a2a2a;
-          padding: 16px 20px; margin-top: 10px;
+          background: #161616;
+          border: 1px solid #c89200cc;
+          border-radius: 18px;
+          padding: 20px 22px; margin-top: 12px;
           font-family: 'Courier Prime', monospace; cursor: pointer;
-          transition: border-left-color 0.2s; width: 100%; max-width: 720px;
+          transition: border-color 0.2s; width: 100%; max-width: 720px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04) inset;
         }
-        .q-panel:hover { border-left-color: #555; }
-        .q-text { font-size: 14px; line-height: 1.7; color: #555; padding: 5px 8px; margin-bottom: 3px; }
-        .q-text.sel { border-left: 2px solid #c0c0c0; background: #1a1a1a; color: #e0e0e0; padding-left: 10px; }
-        .q-hint { font-size: 9px; color: #555; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 10px; }
+        .q-panel:hover { border-color: #c89200ff; }
+        .q-text { font-size: 15px; line-height: 1.75; color: #b0b0b0; padding: 6px 10px; margin-bottom: 3px; border-radius: 8px; }
+        .q-text.sel { background: #202020; color: #f5f5f5; padding-left: 14px; }
+        .q-text:hover { background: #1e1e1e; color: #eeeeee; }
+        .q-hint { font-size: 9px; color: #707070; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 12px; font-family: 'Courier Prime', monospace; }
         .entry-card {
-          background: #111; border: 1px solid #1e1e1e; border-radius: 3px;
-          padding: 18px 20px; margin-bottom: 10px;
+          background: #161616;
+          border: 1px solid #c89200cc;
+          border-radius: 18px;
+          padding: 20px 22px; margin-bottom: 12px;
           font-family: 'Courier Prime', monospace; cursor: pointer; transition: border-color .2s;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.04) inset;
         }
-        .entry-card:hover { border-color: #555; }
+        .entry-card:hover { border-color: #c89200ff; }
         .entry-card.answered { opacity: 0.45; cursor: default; }
         .btn-primary {
-          background: none; border: 1px solid #333; color: #888;
+          background: none; border: 1px solid #c8920088; color: #c8c8c8;
           font-family: 'Courier Prime', monospace; font-size: 10px;
           letter-spacing: 0.1em; text-transform: uppercase;
-          padding: 6px 16px; cursor: pointer; border-radius: 2px; transition: all .2s;
+          padding: 7px 18px; cursor: pointer; border-radius: 20px; transition: all .2s;
         }
-        .btn-primary:hover { border-color: #888; color: #c8c8c8; }
+        .btn-primary:hover { border-color: #909090; color: #d8d8d8; }
         .badge {
-          display: inline-block; font-size: 8px; letter-spacing: 0.1em;
-          text-transform: uppercase; padding: 2px 8px; border-radius: 2px;
+          display: inline-block; font-size: 8px; letter-spacing: 0.12em;
+          text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
           font-family: 'Courier Prime', monospace; margin-right: 8px;
         }
       `}</style>
 
       {/* Header */}
-      <div style={{ width: "100%", maxWidth: "720px", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
+      <div style={{ width: "100%", maxWidth: "720px", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "20px" }}>
         <div>
-          <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "26px", color: "#c8c8c8", letterSpacing: "0.06em", fontWeight: "normal" }}>IHIA</div>
+          <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "26px", color: "#f0f0f0", letterSpacing: "0.06em", fontWeight: "normal" }}>IHIA</div>
 
         </div>
-        <div style={{ fontSize: "10px", color: "#555", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>
+        <div style={{ fontSize: "10px", color: "#707070", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>
           {wordsCount} pal. · {shown} perguntas · {pending} pendentes
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ width: "100%", maxWidth: "720px", borderBottom: "1px solid #1a1a1a", marginBottom: "24px", display: "flex" }}>
+      <div style={{ width: "100%", maxWidth: "720px", borderBottom: "1px solid #1a1a1a", marginBottom: "32px", display: "flex" }}>
         <button className={`tab-btn${view === "editor" ? " on" : ""}`} onClick={() => setView("editor")}>Escrita</button>
         <button className={`tab-btn${view === "diary"  ? " on" : ""}`} onClick={() => setView("diary")}>
           Perguntas aceitas{diary.length > 0 ? ` · ${diary.length}` : ""}
@@ -2343,13 +2370,23 @@ function IHIAApp() {
             </div>
           )}
 
-          <div
-            onClick={() => setShowAbout(true)}
-            style={{ width: "100%", maxWidth: "720px", marginTop: "32px", paddingTop: "18px", borderTop: "1px solid #141414", fontSize: "10px", color: "#555", fontFamily: "'Courier Prime', monospace", textAlign: "center", letterSpacing: "0.06em", cursor: "pointer", transition: "color .3s" }}
-            onMouseEnter={e => e.currentTarget.style.color = "#444"}
-            onMouseLeave={e => e.currentTarget.style.color = "#1e1e1e"}
-          >
-            O método que expande a inteligência.
+          <div style={{ width: "100%", maxWidth: "720px", marginTop: "32px", paddingTop: "18px", borderTop: "1px solid #242424", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
+            <div
+              onClick={() => setShowAbout(true)}
+              style={{ fontSize: "10px", color: "#909090", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em", cursor: "pointer", transition: "color .3s", textAlign: "center" }}
+              onMouseEnter={e => e.currentTarget.style.color = "#bbb"}
+              onMouseLeave={e => e.currentTarget.style.color = "#909090"}
+            >
+              O método que expande a inteligência.
+            </div>
+            <div
+              onClick={() => setShowWelcome(true)}
+              style={{ fontSize: "9px", color: "#505050", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", transition: "color .3s" }}
+              onMouseEnter={e => e.currentTarget.style.color = "#e8a830"}
+              onMouseLeave={e => e.currentTarget.style.color = "#505050"}
+            >
+              ? como usar
+            </div>
           </div>
         </>
       )}
@@ -2359,18 +2396,18 @@ function IHIAApp() {
         <div style={{ width: "100%", maxWidth: "720px" }}>
 
           {/* Painel de autoconhecimento */}
-          <div style={{ background: "#0e0e0e", border: "1px solid #1a1a1a", borderRadius: "3px", padding: "24px", marginBottom: "24px" }}>
-            <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "15px", color: "#555", marginBottom: "6px", fontWeight: "normal" }}>
+          <div style={{ background: "#161616", border: "1px solid #c89200cc", borderRadius: "18px", padding: "24px", marginBottom: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.45)" }}>
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "15px", color: "#b0b0b0", marginBottom: "6px", fontWeight: "600" }}>
               Painel de autoconhecimento
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <div style={{ fontSize: "10px", color: "#555", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>
+              <div style={{ fontSize: "10px", color: "#707070", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.06em" }}>
                 {diary.length} aceita{diary.length !== 1 ? "s" : ""} · {answered} respondida{answered !== 1 ? "s" : ""} · {pending} pendente{pending !== 1 ? "s" : ""}
               </div>
               {diary.length > 0 && !confirmClear && (
                 <button onClick={() => setConfirmClear(true)} style={{
                   background: "none", border: "1px solid #2a2a2a", borderRadius: "2px",
-                  color: "#555", fontFamily: "'Courier Prime', monospace",
+                  color: "#707070", fontFamily: "'Courier Prime', monospace",
                   fontSize: "9px", padding: "3px 10px", cursor: "pointer",
                   letterSpacing: "0.1em", textTransform: "uppercase", transition: "all .2s",
                 }}>limpar histórico</button>
@@ -2394,12 +2431,12 @@ function IHIAApp() {
               )}
             </div>
 
-            <ScaleBar label="S.A.S.E. — Emoção"       count={saseCount}   total={methodTotal} color="#9b8ec2" />
-            <ScaleBar label="MIDESA — Estratégia"      count={midesaCount} total={methodTotal} color="#6a7a9a" />
-            <ScaleBar label="A.P.L. — Metacognição"    count={aplCount}    total={methodTotal} color="#8a7a6a" />
+            <ScaleBar label="S.A.S.E. — Emoção"       count={saseCount}   total={methodTotal} color="#b8a4f0" />
+            <ScaleBar label="MIDESA — Estratégia"      count={midesaCount} total={methodTotal} color="#5b9cf6" />
+            <ScaleBar label="A.P.L. — Metacognição"    count={aplCount}    total={methodTotal} color="#e8a830" />
 
             {diary.length >= 3 && (
-              <div style={{ marginTop: "16px", padding: "14px 16px", background: "#0a0a0a", border: "1px solid #141414", borderRadius: "2px", fontSize: "12px", color: "#3a3a3a", fontFamily: "'Courier Prime', monospace", fontStyle: "italic", lineHeight: "1.7" }}>
+              <div style={{ marginTop: "16px", padding: "14px 16px", background: "#1a1a1a", border: "1px solid #2e2e2e", borderRadius: "12px", fontSize: "13px", color: "#d8d8d8", fontFamily: "'Courier Prime', monospace", fontStyle: "italic", lineHeight: "1.7" }}>
                 ◆ {getDiagnosis(saseCount, midesaCount, aplCount, diary.length)}
               </div>
             )}
@@ -2407,7 +2444,7 @@ function IHIAApp() {
 
           {/* Lista */}
           {diary.length === 0 ? (
-            <div style={{ fontSize: "12px", color: "#555", fontFamily: "'Courier Prime', monospace", textAlign: "center", padding: "40px 0", lineHeight: "2", letterSpacing: "0.06em" }}>
+            <div style={{ fontSize: "13px", color: "#b0b0b0", fontFamily: "'Courier Prime', monospace", textAlign: "center", padding: "40px 0", lineHeight: "2", letterSpacing: "0.06em" }}>
               Nenhuma pergunta aceita ainda.<br />
               Escreva na aba Escrita e aceite com Tab.
             </div>
@@ -2424,29 +2461,29 @@ function IHIAApp() {
                     <span className="badge" style={{ background: fw.color + "18", color: fw.color, border: `1px solid ${fw.color}33` }}>
                       {entry.method}
                     </span>
-                    <span style={{ fontSize: "9px", color: "#555", fontFamily: "'Courier Prime', monospace" }}>
+                    <span style={{ fontSize: "9px", color: "#707070", fontFamily: "'Courier Prime', monospace" }}>
                       {entry.date} {entry.time}
                     </span>
                   </div>
-                  <div style={{ fontSize: "14px", color: entry.answered ? "#333" : "#888", lineHeight: "1.7" }}>
+                  <div style={{ fontSize: "14px", color: entry.answered ? "#555" : "#c0c0c0", lineHeight: "1.7" }}>
                     {entry.question}
                   </div>
                   {entry.answered && entry.answer && (
-                    <div style={{ fontSize: "12px", color: "#555", fontStyle: "italic", lineHeight: "1.6", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid #1a1a1a" }}>
+                    <div style={{ fontSize: "13px", color: "#b0b0b0", fontStyle: "italic", lineHeight: "1.6", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid #1a1a1a" }}>
                       {entry.answer}
                     </div>
                   )}
                   {!entry.answered && (
-                    <div style={{ fontSize: "9px", color: "#555", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "10px" }}>
+                    <div style={{ fontSize: "9px", color: "#707070", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "10px" }}>
                       clique para responder →
                     </div>
                   )}
                   {entry.context && (
                     <div
                       onClick={e => { e.stopPropagation(); setActiveContext(entry.context); }}
-                      style={{ fontSize: "9px", color: "#444", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.08em", marginTop: "8px", cursor: "pointer", display: "inline-block" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#888"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#444"}
+                      style={{ fontSize: "9px", color: "#909090", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.08em", marginTop: "8px", cursor: "pointer", display: "inline-block" }}
+                      onMouseEnter={e => e.currentTarget.style.color = "#bbb"}
+                      onMouseLeave={e => e.currentTarget.style.color = "#777"}
                     >
                       ver contexto original →
                     </div>
@@ -2466,7 +2503,7 @@ function IHIAApp() {
         >
           <div
             onClick={e => e.stopPropagation()}
-            style={{ background: "#0e0e0e", border: "1px solid #2a2a2a", borderRadius: "4px", padding: "28px", width: "100%", maxWidth: "600px", maxHeight: "80vh", display: "flex", flexDirection: "column" }}
+            style={{ background: "#161616", border: "1px solid #c89200cc", borderRadius: "18px", padding: "28px", width: "100%", maxWidth: "600px", maxHeight: "80vh", display: "flex", flexDirection: "column", boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <div style={{ fontSize: "9px", color: "#444", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.16em", textTransform: "uppercase" }}>
@@ -2478,7 +2515,7 @@ function IHIAApp() {
               >×</button>
             </div>
             <div style={{ overflowY: "auto", flex: 1 }}>
-              <div style={{ fontSize: "13px", color: "#666", fontFamily: "'Courier Prime', monospace", lineHeight: "1.9", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <div style={{ fontSize: "13px", color: "#808080", fontFamily: "'Courier Prime', monospace", lineHeight: "1.9", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                 {activeContext}
               </div>
             </div>
@@ -2489,11 +2526,11 @@ function IHIAApp() {
       {/* Modal de resposta */}
       {activeEntry && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#000000cc", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", zIndex: 100 }}>
-          <div style={{ background: "#0e0e0e", border: "1px solid #2a2a2a", borderRadius: "4px", padding: "28px", width: "100%", maxWidth: "600px" }}>
+          <div style={{ background: "#161616", border: "1px solid #c89200cc", borderRadius: "18px", padding: "28px", width: "100%", maxWidth: "600px", boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
             <div style={{ fontSize: "9px", color: getFrameworkInfo(activeEntry.method).color, letterSpacing: "0.16em", textTransform: "uppercase", fontFamily: "'Courier Prime', monospace", marginBottom: "14px" }}>
               ◆ {activeEntry.method} — reflexão
             </div>
-            <div style={{ fontSize: "15px", color: "#aaa", lineHeight: "1.7", fontFamily: "'Courier Prime', monospace", marginBottom: "18px" }}>
+            <div style={{ fontSize: "15px", color: "#d0d0d0", lineHeight: "1.7", fontFamily: "'Courier Prime', monospace", marginBottom: "18px" }}>
               {activeEntry.question}
             </div>
             <textarea
@@ -2508,7 +2545,7 @@ function IHIAApp() {
             {activeEntry.method === "A.P.L."   && <Tratak />}
             <div style={{ display: "flex", gap: "10px", marginTop: "14px", justifyContent: "flex-end" }}>
               <button className="btn-primary" onClick={() => { setActiveEntry(null); setAnswerText(""); }}>cancelar</button>
-              <button className="btn-primary" style={{ borderColor: "#555", color: "#c8c8c8" }} onClick={saveAnswer}>salvar reflexão</button>
+              <button className="btn-primary" style={{ borderColor: "#555", color: "#f0f0f0" }} onClick={saveAnswer}>salvar reflexão</button>
             </div>
           </div>
         </div>
@@ -2521,20 +2558,20 @@ function IHIAApp() {
         >
           <div
             onClick={e => e.stopPropagation()}
-            style={{ background: "#0e0e0e", border: "1px solid #2a2a2a", borderRadius: "4px", padding: "36px 32px", width: "100%", maxWidth: "560px", maxHeight: "90vh", overflowY: "auto" }}
+            style={{ background: "#161616", border: "1px solid #c89200cc", borderRadius: "18px", padding: "36px 32px", width: "100%", maxWidth: "560px", maxHeight: "90vh", overflowY: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}
           >
             {/* Fechar */}
             <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "24px" }}>
-              <button onClick={() => setShowAbout(false)} style={{ background: "none", border: "none", color: "#333", fontFamily: "'Courier Prime', monospace", fontSize: "16px", cursor: "pointer", lineHeight: 1 }}>×</button>
+              <button onClick={() => setShowAbout(false)} style={{ background: "none", border: "none", color: "#d8d8d8", fontFamily: "'Courier Prime', monospace", fontSize: "16px", cursor: "pointer", lineHeight: 1 }}>×</button>
             </div>
 
             {/* Gancho */}
-            <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "18px", color: "#c8c8c8", lineHeight: "1.7", marginBottom: "24px", fontStyle: "italic" }}>
+            <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "18px", color: "#f0f0f0", lineHeight: "1.7", marginBottom: "24px", fontStyle: "italic" }}>
               As perguntas chegaram.<br />As respostas são suas.
             </div>
 
             {/* Corpo */}
-            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#555", lineHeight: "1.9", marginBottom: "28px" }}>
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#d8d8d8", lineHeight: "1.9", marginBottom: "28px" }}>
               <p style={{ marginBottom: "16px" }}>
                 Este app é uma camada do método IHIA — Inteligência Humana Integrada à Artificial. Ele questiona. O livro estrutura.
               </p>
@@ -2547,18 +2584,18 @@ function IHIAApp() {
             </div>
 
             {/* Divisor — Livro */}
-            <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: "24px", marginBottom: "24px" }}>
-              <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "16px", color: "#888", marginBottom: "4px" }}>
+            <div style={{ borderTop: "1px solid #2a2a2a", paddingTop: "24px", marginBottom: "24px" }}>
+              <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "16px", color: "#eeeeee", marginBottom: "4px", fontWeight: "600" }}>
                 IA Profissional
               </div>
-              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#444", lineHeight: "1.7", marginBottom: "16px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#b0b0b0", lineHeight: "1.7", marginBottom: "16px" }}>
                 Do Marco Zero ao Especialista<br />
                 De Prompt a Protagonismo IHIA
               </div>
-              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#888", letterSpacing: "0.04em", marginBottom: "4px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#b0b0b0", letterSpacing: "0.04em", marginBottom: "4px" }}>
                 Lin X · 2026
               </div>
-              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: "#333", lineHeight: "1.9", marginBottom: "20px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: "#909090", lineHeight: "1.9", marginBottom: "20px" }}>
                 Brochura 978-65-01-90795-6<br />
                 Ebook 978-65-01-90794-9
               </div>
@@ -2569,21 +2606,22 @@ function IHIAApp() {
                   href="https://clubedeautores.com.br/livro/ia-profissional-do-marco-zero-ao-especialista"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ display: "inline-block", border: "1px solid #444", borderRadius: "2px", padding: "8px 20px", fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#c8c8c8", letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", transition: "all .2s" }}
+                  onClick={e => { e.preventDefault(); window.open("https://clubedeautores.com.br/livro/ia-profissional-do-marco-zero-ao-especialista", "_blank"); }}
+                  style={{ display: "inline-block", border: "1px solid #555", borderRadius: "20px", padding: "8px 20px", fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#f0f0f0", letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", transition: "all .2s", cursor: "pointer" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = "#888"; e.currentTarget.style.color = "#ffffff"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#444"; e.currentTarget.style.color = "#c8c8c8"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#555"; e.currentTarget.style.color = "#c8c8c8"; }}
                 >
                   ver livro no site oficial
                 </a>
               </div>
-              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#555", letterSpacing: "0.08em" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#909090", letterSpacing: "0.08em" }}>
                 Você será redirecionado para um site externo.
               </div>
             </div>
 
             {/* Divisor — Privacidade e isenção */}
-            <div style={{ borderTop: "1px solid #141414", paddingTop: "20px" }}>
-              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#555", lineHeight: "1.9", letterSpacing: "0.04em" }}>
+            <div style={{ borderTop: "1px solid #242424", paddingTop: "20px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: "#909090", lineHeight: "1.9", letterSpacing: "0.04em" }}>
                 <div style={{ marginBottom: "10px" }}>
                   ◆ Este aplicativo não coleta, armazena ou compartilha dados pessoais. Todo o conteúdo permanece exclusivamente no dispositivo do usuário.
                 </div>
@@ -2593,14 +2631,108 @@ function IHIAApp() {
                 <div>
                   ◆ Desenvolvido por Lin X · Baseado no livro <span style={{ fontStyle: "italic" }}>IA Profissional</span> · 2026
                 </div>
-                <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #141414", color: "#333", fontSize: "9px", letterSpacing: "0.1em" }}>
-                  Versão 1.0.0
+                <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #242424", color: "#808080", fontSize: "9px", letterSpacing: "0.1em" }}>
+                  Versão 1.1.0
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* ══ TOAST — pergunta aceita ══ */}
+      {toast && (
+        <div style={{
+          position: "fixed", bottom: "36px", left: "50%", transform: "translateX(-50%)",
+          background: "#161616", border: "1px solid #c89200cc",
+          borderRadius: "30px", padding: "10px 24px",
+          fontFamily: "'Courier Prime', monospace", fontSize: "11px",
+          color: "#e8a830", letterSpacing: "0.12em", textTransform: "uppercase",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.6)",
+          zIndex: 400, whiteSpace: "nowrap",
+          animation: "fadeInUp 0.25s ease",
+        }}>
+          ◆ pergunta aceita
+        </div>
+      )}
+
+      {/* ══ MODAL DE BOAS-VINDAS ══ */}
+      {showWelcome && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "#000000ee", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", zIndex: 300, overflowY: "auto" }}>
+          <div style={{ background: "#161616", border: "1px solid #c89200cc", borderRadius: "18px", padding: "36px 28px", width: "100%", maxWidth: "540px", boxShadow: "0 8px 40px rgba(0,0,0,0.7)", maxHeight: "90vh", overflowY: "auto" }}>
+
+            {/* Logo */}
+            <div style={{ textAlign: "center", marginBottom: "6px" }}>
+              <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "28px", color: "#f0f0f0", letterSpacing: "0.1em" }}>IHIA</div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: "#808080", letterSpacing: "0.14em", textTransform: "uppercase", marginTop: "6px" }}>
+                Inteligência Humana Integrada à Artificial
+              </div>
+            </div>
+
+            {/* Divisor âmbar */}
+            <div style={{ height: "1px", background: "linear-gradient(to right, transparent, #c89200bb, transparent)", margin: "22px 0" }} />
+
+            {/* Saudação */}
+            <div style={{ fontFamily: "'IM Fell English', serif", fontSize: "17px", color: "#eeeeee", marginBottom: "14px", fontStyle: "italic" }}>
+              Seja bem-vindo ao app IHIA
+            </div>
+
+            {/* Texto principal */}
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#c8c8c8", lineHeight: "1.85", marginBottom: "20px" }}>
+              Este aplicativo não lhe dará respostas. Ele lhe devolverá perguntas que você escondeu de si mesmo.
+            </div>
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#c8c8c8", lineHeight: "1.85", marginBottom: "24px" }}>
+              Você escreve. O sistema identifica o padrão da sua escrita e devolve perguntas que o próprio método determina. Você decide o que aceitar e quando responder.
+            </div>
+
+            {/* Frameworks */}
+            <div style={{ marginBottom: "24px", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#d8d8d8", lineHeight: "1.8" }}>
+                <span style={{ color: "#b8a4f0", fontWeight: "bold" }}>S.A.S.E.</span> atua quando a emoção interfere no julgamento.
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#d8d8d8", lineHeight: "1.8" }}>
+                <span style={{ color: "#5b9cf6", fontWeight: "bold" }}>MIDESA</span> atua quando a decisão precisa de estrutura.
+              </div>
+              <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#d8d8d8", lineHeight: "1.8" }}>
+                <span style={{ color: "#e8a830", fontWeight: "bold" }}>A.P.L.</span> atua quando o pensamento precisa ser disciplinado.
+              </div>
+            </div>
+
+            {/* Divisor */}
+            <div style={{ height: "1px", background: "#c8920044", marginBottom: "22px" }} />
+
+            {/* Como usar */}
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: "#e8a830", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "12px" }}>
+              Como usar
+            </div>
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#c8c8c8", lineHeight: "1.85", marginBottom: "10px" }}>
+              Abra a aba <span style={{ color: "#eeeeee" }}>Escrita</span>. Digite o seu texto. Quando pausar, as perguntas aparecem. Aceite a que fizer sentido. Responda na aba <span style={{ color: "#eeeeee" }}>Perguntas Aceitas</span>, no seu tempo.
+            </div>
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", color: "#c8c8c8", lineHeight: "1.85", marginBottom: "24px" }}>
+              O painel registra em qual área sua escrita mais incide e revela seu padrão predominante.
+            </div>
+
+            {/* Privacidade */}
+            <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", color: "#707070", lineHeight: "1.7", marginBottom: "28px", fontStyle: "italic" }}>
+              Tudo fica no seu dispositivo. Nenhum dado é coletado.
+            </div>
+
+            {/* Botão */}
+            <div style={{ textAlign: "center" }}>
+              <button
+                onClick={() => setShowWelcome(false)}
+                style={{ background: "none", border: "1px solid #c89200ee", borderRadius: "20px", color: "#eeeeee", fontFamily: "'Courier Prime', monospace", fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", padding: "10px 32px", cursor: "pointer", transition: "all .25s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#7a6a3a"; e.currentTarget.style.color = "#e8e8e8"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#c89200ee"; e.currentTarget.style.color = "#c0c0c0"; }}
+              >
+                Entrar
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
